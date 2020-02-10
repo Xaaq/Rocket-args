@@ -39,21 +39,18 @@ def redirect_stderr() -> Generator[StringIO, None, None]:
 
 
 def test_provided_arguments_have_appropriate_values() -> None:
-    input_args = [ArgDataFactory() for _ in range(10)]
-    input_value = "value"
+    input_args = [ArgDataFactory(name=f"arg_{i}") for i in range(3)]
+    cli_args = ["--arg-0", "value_0", "--arg-1", "value_1", "--arg-2", "value_2"]
 
-    cli_args = [(var_name_to_arg_name(arg.name), input_value) for arg in input_args]
-    cli_args_list = list(chain.from_iterable(cli_args))
-
-    with patch_cli_args(cli_args_list):
+    with patch_cli_args(cli_args):
         actual_args = get_cmd_line_args(input_args)
 
-    for arg in input_args:
-        assert actual_args.__getattribute__(arg.name) == input_value
+    for i in range(3):
+        assert actual_args.__getattribute__(f"arg_{i}") == f"value_{i}"
 
 
 def test_not_provided_required_arguments_display_appropriate_message() -> None:
-    input_args = [ArgDataFactory(is_required=True) for _ in range(10)]
+    input_args = [ArgDataFactory(is_required=True) for _ in range(3)]
 
     with patch_cli_args([]), pytest.raises(SystemExit), redirect_stderr() as stderr:
         get_cmd_line_args(input_args)
@@ -61,13 +58,13 @@ def test_not_provided_required_arguments_display_appropriate_message() -> None:
     output = stderr.getvalue()
     assert "the following arguments are required" in output
 
-    expected_cli_args = [var_name_to_arg_name(arg.name) for arg in input_args]
-    for cli_arg_name in expected_cli_args:
+    for arg_name in input_args:
+        cli_arg_name = var_name_to_arg_name(arg_name.name)
         assert cli_arg_name in output
 
 
 def test_not_provided_not_required_arguments_fallback_to_defaults() -> None:
-    input_args = [ArgDataFactory(is_required=False) for _ in range(10)]
+    input_args = [ArgDataFactory(is_required=False) for _ in range(3)]
 
     with patch_cli_args([]):
         args = get_cmd_line_args(input_args)
@@ -77,11 +74,8 @@ def test_not_provided_not_required_arguments_fallback_to_defaults() -> None:
 
 
 def test_arguments_abbreviations_are_not_allowed() -> None:
-    abbreviations = ("first", "second", "third")
-    input_args = [ArgDataFactory(name=f"{name}_arg") for name in abbreviations]
+    input_args = [ArgDataFactory(name=f"{name}_arg") for name in ("first", "second", "third")]
+    cli_args = ["--first", "value", "--second", "value", "--third", "value"]
 
-    cli_args = [(f"--{name}", "value") for name in abbreviations]
-    cli_args_list = list(chain.from_iterable(cli_args))
-
-    with patch_cli_args(cli_args_list), pytest.raises(SystemExit), redirect_stderr():
+    with patch_cli_args(cli_args), pytest.raises(SystemExit), redirect_stderr():
         get_cmd_line_args(input_args)
