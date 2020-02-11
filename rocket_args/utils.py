@@ -1,6 +1,6 @@
 import argparse
 from argparse import Namespace
-from typing import List, NamedTuple, Any
+from typing import Any, List, NamedTuple
 
 ArgData = NamedTuple("ArgData", (("name", str), ("is_required", bool), ("default", Any)))
 
