@@ -2,12 +2,12 @@ import argparse
 import sys
 from contextlib import contextmanager
 from io import StringIO
-from itertools import chain
 from typing import Generator, List
 
 import pytest
 from factory import Factory, Sequence
 from factory.fuzzy import FuzzyChoice
+
 from rocket_args.utils import ArgData, get_cmd_line_args, var_name_to_arg_name
 
 
@@ -73,9 +73,7 @@ def test_not_provided_not_required_arguments_fallback_to_defaults() -> None:
 
 
 def test_arguments_abbreviations_are_not_allowed() -> None:
-    input_args = [
-        ArgDataFactory(name=f"{name}_arg") for name in ("first", "second", "third")
-    ]
+    input_args = [ArgDataFactory(name=f"{name}_arg") for name in ("first", "second", "third")]
     cli_args = ["--first", "value", "--second", "value", "--third", "value"]
 
     with patch_cli_args(cli_args), pytest.raises(SystemExit), redirect_stderr():
