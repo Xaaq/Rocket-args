@@ -1,4 +1,9 @@
-# Welcome to MkDocs
+<style>
+p {
+text-align: center;
+}
+</style>
+<p>Welcome to MkDocs</p>
 
 For full documentation visit [mkdocs.org](https://mkdocs.org).
 
@@ -11,7 +16,7 @@ SEE THAT [THAAAAAAAAAAAAAAAAT](sum-directory/index.md#second-other)
 * `mkdocs build` - Build the documentation site.
 * `mkdocs help` - Print this help message.
 
-{! ../README.rst !}
+{! ../README.md !}
 
 ## Project layout
 
