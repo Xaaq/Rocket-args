@@ -3,3 +3,6 @@ nav:
   - Home: index.md
   - First one: sum-directory
 theme: readthedocs
+markdown_extensions:
+  - markdown_include.include:
+      base_path: docs

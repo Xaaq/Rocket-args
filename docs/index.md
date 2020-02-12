@@ -11,6 +11,8 @@ SEE THAT [THAAAAAAAAAAAAAAAAT](sum-directory/index.md#second-other)
 * `mkdocs build` - Build the documentation site.
 * `mkdocs help` - Print this help message.
 
+{! ../README.rst !}
+
 ## Project layout
 
     mkdocs.yml    # The configuration file.
