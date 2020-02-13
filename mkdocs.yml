@@ -2,7 +2,7 @@ site_name: My Docs
 nav:
   - Home: index.md
   - First one: sum-directory
-theme: readthedocs
+theme: material
 markdown_extensions:
   - markdown_include.include:
       base_path: docs

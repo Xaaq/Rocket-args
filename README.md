@@ -11,9 +11,6 @@
 * Free software: MIT license
 * Documentation: https://rocket-args.readthedocs.io.
 
-<span style="color:red; font-family:Georgia; text-align:center; font-size:2em;">The goal of the Women’s Enterprise Action Loan Fund, (WEALF): helping women business owners become financially self-sufficient.</span>
-<div style="color:red; font-family:Georgia; text-align:center; font-size:2em;">The goal of the Women’s Enterprise Action Loan Fund, (WEALF): helping women business owners become financially self-sufficient.</div>
-
 Features
 --------
 
