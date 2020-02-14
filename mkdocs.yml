@@ -1,8 +1,8 @@
-site_name: My Docs
+site_name: Rocket-args
+theme: material
 nav:
   - Home: index.md
-  - First one: sum-directory
-theme: material
+  - Contributing: contributing.md
 markdown_extensions:
   - markdown_include.include:
       base_path: docs
