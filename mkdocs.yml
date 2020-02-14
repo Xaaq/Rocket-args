@@ -1,0 +1,8 @@
+site_name: Rocket-args
+theme: material
+nav:
+  - Home: index.md
+  - Contributing: contributing.md
+markdown_extensions:
+  - markdown_include.include:
+      base_path: docs
