@@ -23,6 +23,7 @@ pytest = "^5.3.5"
 mkdocs = "^1.0.4"
 markdown-include = "^0.5.1"
 mkdocs-material = "^4.6.3"
+flake8 = "^3.7.9"
 
 [tool.isort]
 line_length = 120
