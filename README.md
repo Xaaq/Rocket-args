@@ -28,10 +28,10 @@
 So you wanted a tool that handles parsing arguments? You've come to right place!
 
 Key features:
-* Fully declarative.
-* Less boilerplate code required.
-* Type hints.
-* No more `Namespace` objects with no IDE auto-completion!
+* fully declarative,
+* less boilerplate code required,
+* type hints,
+* no more `Namespace` objects with no IDE auto-completion!
 
 ## Examples
 
