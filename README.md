@@ -12,8 +12,8 @@
 </div>
 
 **Source code**:
-<a href="https://github.com/Xaaq/Rocket-args/tree/master">
-    https://github.com/Xaaq/Rocket-args/tree/master
+<a href="https://github.com/Xaaq/Rocket-args">
+    https://github.com/Xaaq/Rocket-args
 </a>
 
 **Documentation**:
