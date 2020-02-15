@@ -1,18 +1,74 @@
-<p style="text-align: center">
-    <img src="https://lh3.googleusercontent.com/w6xFZYayBArcBrf23jXU9bo8jsTJTdlrXVvuqDK7wHLE1HNGipHNgD7eCCAlvWzCgTaVgAlQQWhdo_qZ07H0eTZgvptA6m_lNzZ6naSXM2K_SG1nn0pCMr0XPCI1MF9G3EwwyGZ4qEmMQMrUmnfv3bpL86gdGhQjvwbAh0K-D8wUkLAXTL_-YarIe_1bMm5pxOn4PZLl7u6EgBaLlM7K9kpoPFjgThRLfPjDeXez37VnpIiJZZJoMDUCTz_WnmGoajsNCJfYZCRNYh0cKLvqw8UXTSGWhxkaK4uwKKrpLBz9We_-jB7AlxFs-WJmPgmyyae_pYrCCvAV3GgHOYVJ-OxKCJPwwbh_jPX5r30SKKNePYSBdr9q0LTOsXZ56vMblXr50QKkj9PLrguUxchDftATYL-w9XagJlIEch3bif_ooj1t8KxboxTXClYMWrpLJbO9C-HjUMQNYc0xYHIuU-cCzBs6VjOQ7dX8sAfGI5rhFD2qgg6KWhMT369jOKyboP-tvBbbZ8UJD-tvfDg4zD79pFfyxTYB9qbKbPNjtw_-lYO3yQCRRrjwLx22_gzTWfEKXOwL0zkf5AK9d-xt_SmEcpPTS7KhufO3g4uVDfoEb_MpxCklQOuXzttgq51UOoKPcL7zHDioPsKQ8P-S6B2n1tkJQ9M0t4CsER2ny2JR9HFv2W4zwg=w1186-h1126-no" alt="Logo">
+<div align="center">
+    <img src="https://i.imgur.com/vjEOvJj.png" alt="logo">
     <b>Make your arg parsing even more declarative!</b>
-</p>
+</div>
 
 ---
 
-* Free software: MIT license
-* Documentation: TODO
+<div align="center">
+    <a href="https://github.com/Xaaq/Rocket-args/blob/complete-documentation/LICENSE">
+        <img src="https://img.shields.io/badge/license-MIT-informational" alt="badge">
+    </a>
+</div>
+
+**Source code**:
+<a href="https://github.com/Xaaq/Rocket-args">
+    https://github.com/Xaaq/Rocket-args
+</a>
+
+**Documentation**:
+<a href="https://xaaq.github.io/Rocket-args">
+    https://xaaq.github.io/Rocket-args
+</a>
 
 ---
 
-## Features
+## Overview
 
-* TODO
+So you wanted a tool that handles parsing arguments? You've come to right place!
+
+Key features:
+
+* fully declarative,
+* less boilerplate code required,
+* type hints,
+* no more `Namespace` objects with no IDE auto-completion!
+
+## Examples
+
+### Simple CLI args
+
+Create `main.py` with following content:
+
+```python
+class MyArgs(RocketBase):
+    my_int: int
+    my_float: float
+    my_str: str
+
+args = MyArgs.parse_args()
+print(args.my_int, args.my_float, args.my_str)
+```
+
+Call it with arguments:
+
+```
+$ python main.py --my-int 1234 --my-float 12.34 --my-string abcd
+1234 12.34 abcd
+```
+
+### Auto-generated help
+
+```
+$ python main.py --help
+usage: main.py [-h] [--my-int MY_INT] [--my-float MY_FLOAT] [--my-str MY_STR]
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --my-int MY_INT
+  --my-float MY_FLOAT
+  --my-str MY_STR
+```
 
 ## Credits
 
