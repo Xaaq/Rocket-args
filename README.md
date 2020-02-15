@@ -28,6 +28,7 @@
 So you wanted a tool that handles parsing arguments? You've come to right place!
 
 Key features:
+
 * fully declarative,
 * less boilerplate code required,
 * type hints,
