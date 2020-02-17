@@ -9,8 +9,12 @@ theme:
 
 nav:
   - Home: index.md
+  - Tutorial:
+      - First steps: tutorial/first_steps.md
   - Contributing: contributing.md
 
 markdown_extensions:
+  - admonition
+  - codehilite
   - markdown_include.include:
       base_path: docs
