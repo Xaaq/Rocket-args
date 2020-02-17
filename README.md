@@ -4,7 +4,8 @@
 </div>
 
 ---
-
+# TODO: add missing labels (pypi, travis)
+# TODO: change in below label "complete-documentation" to "master"
 <div align="center">
     <a href="https://travis-ci.com/Xaaq/Rocket-args">
         <img src="https://travis-ci.com/Xaaq/Rocket-args.svg?branch=master" alt="badge">
