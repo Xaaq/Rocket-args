@@ -4,7 +4,7 @@ from tests.test_get_cmd_line_args import patch_cli_args
 
 class TestParseArgs:
     @staticmethod
-    def test_provided_arguments_return_appropriate_values():
+    def test_provided_arguments_return_appropriate_values() -> None:
         class Args(RocketBase):
             arg_int: int
             arg_str: str
@@ -20,7 +20,7 @@ class TestParseArgs:
         assert output_args.arg_float == 123.456
 
     @staticmethod
-    def test_not_provided_arguments_fallback_to_defaults():
+    def test_not_provided_arguments_fallback_to_defaults() -> None:
         class Args(RocketBase):
             arg_int: int = 123
             arg_str: str = "abc"
