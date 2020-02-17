@@ -1,8 +1,16 @@
 site_name: Rocket-args
-theme: material
+repo_name: Xaaq/Rocket-args
+repo_url: https://github.com/Xaaq/Rocket-args
+
+theme:
+  name: material
+  logo: "logo_mini.png"
+  favicon: "logo_mini.png"
+
 nav:
   - Home: index.md
   - Contributing: contributing.md
+
 markdown_extensions:
   - markdown_include.include:
       base_path: docs
