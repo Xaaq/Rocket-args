@@ -4,8 +4,8 @@ repo_url: https://github.com/Xaaq/Rocket-args
 
 theme:
   name: material
-  logo: "logo_mini.png"
-  favicon: "logo_mini.png"
+  logo: "img/logo_mini.png"
+  favicon: "img/logo_mini.png"
 
 nav:
   - Home: index.md
