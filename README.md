@@ -34,12 +34,20 @@ Key features:
 * type hints,
 * no more `Namespace` objects with no IDE auto-completion!
 
+## Installation
+
+You will need Python 3.6+
+
+In order to install it:
+```
+pip install rocket-args
+```
+
 ## Examples
 
 ### Simple CLI args
 
 Create `main.py` with following content:
-
 ```python
 class MyArgs(RocketBase):
     my_int: int
@@ -47,14 +55,13 @@ class MyArgs(RocketBase):
     my_str: str
 
 args = MyArgs.parse_args()
-print(args.my_int, args.my_float, args.my_str)
+print(args)
 ```
 
 Call it with arguments:
-
 ```
 $ python main.py --my-int 1234 --my-float 12.34 --my-string abcd
-1234 12.34 abcd
+MyArgs(my_int=1234, my_float=12.34, my_str=abcd)
 ```
 
 ### Auto-generated help
