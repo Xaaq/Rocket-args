@@ -9,6 +9,11 @@ class RocketBase:
         for name, value in data.items():
             self.__setattr__(name, value)
 
+    def __repr__(self) -> str:
+        args = [f"{name}={value}" for name, value in self.__dict__.items()]
+        concatenated_args = ", ".join(args)
+        return f"{self.__class__.__name__}({concatenated_args})"
+
     @classmethod
     def parse_args(cls) -> "RocketBase":
         user_defined_args = cls.__annotations__

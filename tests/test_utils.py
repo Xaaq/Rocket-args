@@ -1,7 +1,7 @@
 from rocket_args.utils import var_name_to_arg_name
 
 
-def test_var_name_to_arg_name():
+def test_var_name_to_arg_name() -> None:
     input_arg = "arg_name_012"
     expected_arg = "--arg-name-012"
 
