@@ -6,6 +6,12 @@
 ---
 
 <div align="center">
+    <a href="https://travis-ci.com/Xaaq/Rocket-args">
+        <img src="https://travis-ci.com/Xaaq/Rocket-args.svg?branch=master" alt="badge">
+    </a>
+    <a href="https://pypi.org/project/rocket-args/">
+        <img src="https://img.shields.io/badge/pypi-0.1.0-informational" alt="badge">
+    </a>
     <a href="https://github.com/Xaaq/Rocket-args/blob/complete-documentation/LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-informational" alt="badge">
     </a>
@@ -76,8 +82,3 @@ optional arguments:
   --my-float MY_FLOAT
   --my-str MY_STR
 ```
-
-## Credits
-
-This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the
-[audreyr/cookiecutter-pypackage](https://github.com/audreyr/cookiecutter-pypackage) project template.
