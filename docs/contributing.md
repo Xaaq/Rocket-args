@@ -1,10 +1,11 @@
 You want to contribute? Great!
 
-Below you will find some tips and proposed workflow so have a look.
+Below you will find instructions how to setup environment, launch tests, build docs etc.
 
 ## Setup environment
 
-Before you start install [pyenv]https://github.com/pyenv/pyenv) if you haven't yet - tool for managing python versions.
+Before you start install [pyenv]https://github.com/pyenv/pyenv) if you haven't yet - it is tool for managing python
+versions.
 
 1. Clone repo.
 1. Install appropriate python versions supported by this repository by `pyenv`:
@@ -51,14 +52,14 @@ Before you start install [pyenv]https://github.com/pyenv/pyenv) if you haven't y
 
 ## Running tests
 
-You can run tests either against you actual python version (faster version - good for fast checking if our changes
+You can run tests either against you actual python version - faster version (good for fast checking if our changes
 didn't break anything):
 ```
 $ pytest tests
 ```
 
-or run them against all supported python versions using [tox](https://tox.readthedocs.io/en/latest/) (slower version -
-good for final check if everything we've done works):
+or run them against all supported python versions using [tox](https://tox.readthedocs.io/en/latest/) - slower version
+(good for final check if everything we've done works):
 ```
 $ tox
 ```
