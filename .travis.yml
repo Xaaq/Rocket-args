@@ -11,11 +11,13 @@ install:
 
 jobs:
   include:
-    - name: docs
-      install:
-        - pip install poetry
-        - poetry install
-      script: poetry run mkdocs build
+    - name: dist
+      if: tag IS present
+      install: pip install poetry
+      script:
+        - poetry build
+        - poetry config repositories.pypi https://test.pypi.org/legacy/
+        - poetry publish --repository pypi --username __token__ --password $PYPI_TOKEN
 
     - stage: Build and deploy
       name: docs
@@ -34,11 +36,3 @@ jobs:
         local_dir: site
         on:
           tags: true
-
-    - name: dist
-      if: tag IS present
-      install: pip install poetry
-      script:
-        - poetry build
-        - poetry config repositories.pypi https://test.pypi.org/legacy/
-        - poetry publish --repository pypi --username __token__ --password $PYPI_TOKEN
