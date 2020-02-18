@@ -4,9 +4,9 @@ To parse command line arguments in the simplest possible way create class that i
 for every CLI argument that you want to add, create class field with appropriate type hint:
 ```python
 class MyArgs(RocketBase):
-    my_int: int
-    my_float: float
-    my_str: str
+    my_int: int  # for CLI argument --my-int
+    my_float: float  # for CLI argument --my-float
+    my_str: str  # for CLI argument --my-str
 ```
 
 !!! note
@@ -51,7 +51,7 @@ scratch.py: error: the following arguments are required: --my-int, --my-float, -
 
 ## Pretty-printing CLI arguments
 
-You can print your arguments instance directly to make it be nicely printed:
+To reduce amount of boilerplate code print your arguments instance directly:
 ```python
 class MyArgs(RocketBase):
     my_int: int
@@ -68,20 +68,6 @@ $ python main.py --my-int 1234 --my-float 12.34 --my-str abcd
 MyArgs(my_int=1234, my_float=12.34, my_str=abcd)
 ```
 
-## Help
-
-When you launch above script with `--help` parameter you will get help message:
-```
-$ python main.py --help
-usage: main.py [-h] [--my-int MY_INT] [--my-float MY_FLOAT] [--my-str MY_STR]
-
-optional arguments:
-  -h, --help           show this help message and exit
-  --my-int MY_INT
-  --my-float MY_FLOAT
-  --my-str MY_STR
-```
-
 ## Default values
 
 You can specify default values for your fields:
@@ -89,7 +75,7 @@ You can specify default values for your fields:
 class MyArgs(RocketBase):
     my_int: int = 123
     my_float: float = 12.34
-    my_str: str = "abc"
+    my_str: str = "abcd"
 
 args = MyArgs.parse_args()
 print(args)
@@ -107,3 +93,29 @@ Of course you can overwrite them by providing arguments from command line:
 $ python main.py --my-int 5678 --my-float 56.78 --my-str efgh
 MyArgs(my_int=5678, my_float=56.78, my_str=efgh)
 ```
+
+## Help
+
+When you launch above script with `--help` parameter you will get help message:
+```
+$ python main.py --help
+usage: main.py [-h] [--my-int MY_INT] [--my-float MY_FLOAT] [--my-str MY_STR]
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --my-int MY_INT
+  --my-float MY_FLOAT
+  --my-str MY_STR
+```
+
+## Generated CLI argument names
+
+For every class field there will be generated CLI argument following these steps:
+
+1. All underscores will be changed to dashes.
+1. Two leading dashes will be added.
+
+For example:
+
+* field `arg` -> CLI argument `--arg`
+* field `long_arg_name` -> CLI argument `--long-arg-name`

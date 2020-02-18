@@ -32,7 +32,7 @@ Key features:
 * fully declarative,
 * less boilerplate code required,
 * type hints,
-* no more `Namespace` objects with no IDE auto-completion!
+* IDE auto-completion - no more strange `Namespace` objects.
 
 ## Installation
 
