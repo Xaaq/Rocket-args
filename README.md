@@ -6,7 +6,13 @@
 ---
 
 <div align="center">
-    <a href="https://github.com/Xaaq/Rocket-args/blob/complete-documentation/LICENSE">
+    <a href="https://travis-ci.com/Xaaq/Rocket-args">
+        <img src="https://travis-ci.com/Xaaq/Rocket-args.svg?branch=master" alt="badge">
+    </a>
+    <a href="https://pypi.org/project/rocket-args/">
+        <img src="https://img.shields.io/badge/pypi-0.1.0-informational" alt="badge">
+    </a>
+    <a href="https://github.com/Xaaq/Rocket-args/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-informational" alt="badge">
     </a>
 </div>
@@ -32,14 +38,22 @@ Key features:
 * fully declarative,
 * less boilerplate code required,
 * type hints,
-* no more `Namespace` objects with no IDE auto-completion!
+* IDE auto-completion - no more strange `Namespace` objects.
+
+## Installation
+
+You will need Python 3.6+
+
+In order to install it:
+```
+pip install rocket-args
+```
 
 ## Examples
 
 ### Simple CLI args
 
 Create `main.py` with following content:
-
 ```python
 class MyArgs(RocketBase):
     my_int: int
@@ -47,14 +61,13 @@ class MyArgs(RocketBase):
     my_str: str
 
 args = MyArgs.parse_args()
-print(args.my_int, args.my_float, args.my_str)
+print(args)
 ```
 
 Call it with arguments:
-
 ```
 $ python main.py --my-int 1234 --my-float 12.34 --my-string abcd
-1234 12.34 abcd
+MyArgs(my_int=1234, my_float=12.34, my_str=abcd)
 ```
 
 ### Auto-generated help
@@ -69,8 +82,3 @@ optional arguments:
   --my-float MY_FLOAT
   --my-str MY_STR
 ```
-
-## Credits
-
-This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the
-[audreyr/cookiecutter-pypackage](https://github.com/audreyr/cookiecutter-pypackage) project template.
