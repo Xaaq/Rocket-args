@@ -1,4 +1,3 @@
-"""Main module."""
 from typing import Any
 
 from rocket_args.utils import ArgData, get_cmd_line_args
