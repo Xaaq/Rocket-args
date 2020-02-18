@@ -32,12 +32,15 @@ Before you start install [pyenv]https://github.com/pyenv/pyenv) if you haven't y
     $ poetry install
     ```
 
-1. Go inside virtualenv created by `poetry` **(If later you exit shell and open it again make sure to execute this
-    command again - otherwise installed python packages probably won't be available)**:
+1. Go inside virtualenv created by `poetry`:
 
     ```
     $ poetry shell
     ```
+
+    !!! note
+        If you will exit shell and open it afresh make sure to execute this command again - otherwise installed python
+        packages probably won't be available.
 
 1. `poetry` have already installed [pre-commit](https://pre-commit.com/) for you - we use it to run various formatters
     automatically on every commit. To turn on (install) `pre-commit` in this repository type:
