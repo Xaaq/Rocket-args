@@ -12,7 +12,7 @@
     <a href="https://pypi.org/project/rocket-args/">
         <img src="https://img.shields.io/badge/pypi-0.1.0-informational" alt="badge">
     </a>
-    <a href="https://github.com/Xaaq/Rocket-args/blob/complete-documentation/LICENSE">
+    <a href="https://github.com/Xaaq/Rocket-args/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-informational" alt="badge">
     </a>
 </div>
