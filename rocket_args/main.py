@@ -1,6 +1,8 @@
-from typing import Any
+from typing import Any, Type, TypeVar
 
 from rocket_args.utils import ArgData, get_cmd_line_args
+
+T = TypeVar("T", bound="RocketBase")
 
 
 class RocketBase:
@@ -14,7 +16,7 @@ class RocketBase:
         return f"{self.__class__.__name__}({concatenated_args})"
 
     @classmethod
-    def parse_args(cls) -> "RocketBase":  # TODO: add type hint that point to self class, not RocketBase every time?
+    def parse_args(cls: Type[T]) -> T:
         user_defined_args = cls.__annotations__
         arg_data = [
             ArgData(name=name, is_required=name not in cls.__dict__, default=cls.__dict__.get(name, ...))

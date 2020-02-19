@@ -27,6 +27,8 @@ print(args.my_int, args.my_float, args.my_str)
 
 Put all above code into some file - let's say `main.py`:
 ```python
+from rocket_args import RocketBase
+
 class MyArgs(RocketBase):
     my_int: int
     my_float: float
@@ -53,6 +55,8 @@ scratch.py: error: the following arguments are required: --my-int, --my-float, -
 
 To reduce amount of boilerplate code print your arguments instance directly:
 ```python
+from rocket_args import RocketBase
+
 class MyArgs(RocketBase):
     my_int: int
     my_float: float
@@ -72,6 +76,8 @@ MyArgs(my_int=1234, my_float=12.34, my_str=abcd)
 
 You can specify default values for your fields:
 ```python
+from rocket_args import RocketBase
+
 class MyArgs(RocketBase):
     my_int: int = 123
     my_float: float = 12.34

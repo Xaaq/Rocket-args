@@ -55,6 +55,8 @@ pip install rocket-args
 
 Create `main.py` with following content:
 ```python
+from rocket_args import RocketBase
+
 class MyArgs(RocketBase):
     my_int: int
     my_float: float
