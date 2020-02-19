@@ -1,5 +1,5 @@
 from rocket_args.main import RocketBase
-from tests.test_get_cmd_line_args import patch_cli_args
+from tests.utils import patch_cli_args
 
 
 class TestParseArgs:
