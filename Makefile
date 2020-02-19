@@ -1,85 +1,43 @@
-.PHONY: clean clean-test clean-pyc clean-build docs help # TODO: add all targets to phony?
-.DEFAULT_GOAL := help
+.PHONY: help clean type-check lint coverage test test-all test-all-fast docs dist
+.DEFAULT_GOAL = help
 
-define BROWSER_PYSCRIPT
-import os, webbrowser, sys
+help: ## show this message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-from urllib.request import pathname2url
+clean: ## remove all build and test artifacts along with python cache
+	@rm -f requirements.txt
+	@rm -f .coverage
+	@rm -rf dist/
+	@rm -rf site/
+	@rm -rf htmlcov/
+	@rm -rf .tox/
+	@rm -rf .mypy_cache/
+	@rm -rf .pytest_cache/
+	@find . -name '__pycache__' -exec rm -rf {} +
 
-webbrowser.open("file://" + pathname2url(os.path.abspath(sys.argv[1])))
-endef
-export BROWSER_PYSCRIPT
+type-check: ## check code for typing errors
+	@poetry run mypy rocket_args
 
-define PRINT_HELP_PYSCRIPT
-import re, sys
+lint: ## check code style with flake8
+	@poetry run flake8 rocket_args tests
 
-for line in sys.stdin:
-	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
-	if match:
-		target, help = match.groups()
-		print("%-20s %s" % (target, help))
-endef
-export PRINT_HELP_PYSCRIPT
+coverage: ## check code coverage
+	@poetry run coverage run --source rocket_args --module pytest
+	@poetry run coverage html
+	@xdg-open htmlcov/index.html
 
-BROWSER := python -c "$$BROWSER_PYSCRIPT"
+test: ## run fast tests using pytest
+	@poetry run pytest tests
 
-help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+test-all: ## run tests against different python versions using tox
+	@poetry run tox
 
-clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+test-all-fast: ## run tests against different python versions using tox in parallel
+	@poetry run tox -p all
 
-clean-build: ## remove build artifacts
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
+docs: ## build docs and launch them with live-reload
+	@poetry run mkdocs serve
 
-clean-pyc: ## remove Python file artifacts
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
-
-clean-test: ## remove test and coverage artifacts
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
-	rm -fr .pytest_cache
-
-lint: ## check style with flake8
-	flake8 rocket_args tests
-
-test: ## run tests quickly with the default Python
-	pytest
-
-test-all: ## run tests on every Python version with tox
-	tox
-
-coverage: ## check code coverage quickly with the default Python
-	coverage run --source rocket_args -m pytest
-	coverage report -m
-	coverage html
-	$(BROWSER) htmlcov/index.html
-
-docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/rocket_args.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ rocket_args
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
-
-servedocs: docs ## compile the docs watching for changes
-	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D . # TODO: remove the dot?
-
-release: dist ## package and upload a release
-	twine upload dist/*
-
-dist: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
-
-install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+dist: ## builds source and wheel package
+	@poetry build
