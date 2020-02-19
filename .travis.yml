@@ -11,7 +11,8 @@ install:
 
 jobs:
   include:
-    - name: dist
+    - stage: build and deploy
+      name: dist
       if: tag IS present
       install: pip install poetry
       script:
@@ -19,7 +20,7 @@ jobs:
         - poetry config repositories.pypi https://test.pypi.org/legacy/
         - poetry publish --repository pypi --username __token__ --password $PYPI_TOKEN
 
-    - stage: Build and deploy
+    - stage: build and deploy
       name: docs
       if: tag IS present
       install:
