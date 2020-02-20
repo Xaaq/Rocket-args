@@ -1,11 +1,9 @@
-<div align="center">
+<p align="center">
     <img src="https://i.imgur.com/vjEOvJj.png" alt="logo">
-    <b>Make your arg parsing even more declarative!</b>
-</div>
+    <b>Make your arg parsing even more declarative!</b><br>
+</p>
 
----
-
-<div align="center">
+<p align="center">
     <a href="https://travis-ci.com/Xaaq/Rocket-args">
         <img src="https://travis-ci.com/Xaaq/Rocket-args.svg?branch=master" alt="badge">
     </a>
@@ -15,7 +13,9 @@
     <a href="https://github.com/Xaaq/Rocket-args/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-informational" alt="badge">
     </a>
-</div>
+</p>
+
+---
 
 **Source code**:
 <a href="https://github.com/Xaaq/Rocket-args">
@@ -55,6 +55,8 @@ pip install rocket-args
 
 Create `main.py` with following content:
 ```python
+from rocket_args import RocketBase
+
 class MyArgs(RocketBase):
     my_int: int
     my_float: float

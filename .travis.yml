@@ -1,25 +1,33 @@
 language: python
+script: tox
+
 python:
   - 3.8
   - 3.7
   - 3.6
+
 install:
   - pip install --upgrade tox-travis
-script: tox
+
 jobs:
   include:
-    - name: docs
-      install:
-       - pip install poetry
-       - poetry install
-      script: poetry run mkdocs build
-    - stage: Build and deploy
+    - stage: build and deploy
+      name: dist
+      if: tag IS present
+      install: pip install poetry
+      script:
+        - poetry build
+        - poetry config repositories.pypi https://test.pypi.org/legacy/
+        - poetry publish --repository pypi --username __token__ --password $PYPI_TOKEN
+
+    - stage: build and deploy
       name: docs
       if: tag IS present
       install:
-      - pip install poetry
-      - poetry install
+        - pip install poetry
+        - poetry install
       script: poetry run mkdocs build
+
       deploy:
         provider: pages:git
         edge: true
@@ -29,10 +37,3 @@ jobs:
         local_dir: site
         on:
           tags: true
-    - name: dist
-      if: tag IS present
-      install: pip install poetry
-      script:
-        - poetry build
-        - poetry config repositories.pypi https://test.pypi.org/legacy/
-        - poetry publish --repository pypi --username __token__ --password $PYPI_TOKEN

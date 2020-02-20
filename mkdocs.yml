@@ -2,6 +2,12 @@ site_name: Rocket-args
 repo_name: Xaaq/Rocket-args
 repo_url: https://github.com/Xaaq/Rocket-args
 
+markdown_extensions:
+  - admonition
+  - codehilite
+  - markdown_include.include:
+      base_path: docs
+
 theme:
   name: material
   logo: "img/logo_mini.png"
@@ -12,9 +18,3 @@ nav:
   - Tutorial:
       - First steps: tutorial/first_steps.md
   - Contributing: contributing.md
-
-markdown_extensions:
-  - admonition
-  - codehilite
-  - markdown_include.include:
-      base_path: docs

@@ -1,11 +1,11 @@
 import argparse
 from argparse import Namespace
-from typing import Any, List, NamedTuple
+from typing import Any, NamedTuple, Sequence
 
 ArgData = NamedTuple("ArgData", (("name", str), ("is_required", bool), ("default", Any)))
 
 
-def get_cmd_line_args(args: List[ArgData]) -> Namespace:
+def get_cmd_line_args(args: Sequence[ArgData]) -> Namespace:
     parser = argparse.ArgumentParser(allow_abbrev=False)
 
     for arg in args:
