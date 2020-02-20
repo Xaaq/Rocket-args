@@ -17,8 +17,7 @@ jobs:
       install: pip install poetry
       script:
         - poetry build
-        - poetry config repositories.pypi https://test.pypi.org/legacy/
-        - poetry publish --repository pypi --username __token__ --password $PYPI_TOKEN
+        - poetry publish --username __token__ --password $PYPI_TOKEN
 
     - stage: build and deploy
       name: docs
