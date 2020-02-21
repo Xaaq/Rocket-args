@@ -8,7 +8,7 @@
         <img src="https://travis-ci.com/Xaaq/Rocket-args.svg?branch=master" alt="badge">
     </a>
     <a href="https://pypi.org/project/rocket-args/">
-        <img src="https://img.shields.io/badge/pypi-0.1.0-informational" alt="badge">
+        <img src="https://img.shields.io/badge/pypi-0.2.0-informational" alt="badge">
     </a>
     <a href="https://github.com/Xaaq/Rocket-args/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-informational" alt="badge">

@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "rocket-args"
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
 authors = ["Amadeusz Hercog <xaaq333@gmail.com>"]
 repository = "https://github.com/Xaaq/Rocket-args"
