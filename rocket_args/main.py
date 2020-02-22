@@ -1,6 +1,6 @@
-from typing import Any, Type, TypeVar
+from typing import Any, List, Sequence, Tuple, Type, TypeVar
 
-from rocket_args.utils import ArgData, get_cmd_line_args
+from rocket_args.utils import Argument, FullArgumentData, get_arg_value_from_namespace, get_cmd_line_args
 
 T = TypeVar("T", bound="RocketBase")
 
@@ -17,15 +17,19 @@ class RocketBase:
 
     @classmethod
     def parse_args(cls: Type[T]) -> T:
-        user_defined_args = cls.__annotations__
+        field_names_with_types = cls.__annotations__.items()
+        field_names_to_default = {name: cls.__dict__.get(name, ...) for name, _ in field_names_with_types}
         arg_data = [
-            ArgData(name=name, is_required=name not in cls.__dict__, default=cls.__dict__.get(name, ...))
-            for name in user_defined_args.keys()
+            FullArgumentData.from_user_arg_data(name, default)
+            if isinstance(default, Argument)
+            else FullArgumentData.from_raw_data(name, default)
+            for name, default in field_names_to_default.items()
         ]
-        cmd_line_args = get_cmd_line_args(arg_data)
-        parsed_arguments = {
-            arg_name: arg_type(cmd_line_args.__getattribute__(arg_name))
-            for arg_name, arg_type in user_defined_args.items()
-        }
 
-        return cls(**parsed_arguments)
+        cmd_line_args = get_cmd_line_args(arg_data)
+
+        parsed_args = {
+            arg_name: arg_type(get_arg_value_from_namespace(arg_data.names, cmd_line_args))
+            for arg_data, (arg_name, arg_type) in zip(arg_data, field_names_with_types)
+        }
+        return cls(**parsed_args)
