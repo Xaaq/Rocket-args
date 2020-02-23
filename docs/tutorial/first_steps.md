@@ -78,7 +78,7 @@ You can specify default values for your fields:
 from rocket_args import RocketBase
 
 class MyArgs(RocketBase):
-    my_int: int = 123
+    my_int: int = 1234
     my_float: float = 12.34
     my_str: str = "abcd"
 
@@ -112,15 +112,3 @@ optional arguments:
   --my-float MY_FLOAT
   --my-str MY_STR
 ```
-
-## Generated CLI argument names
-
-For every class field there will be generated CLI argument following these steps:
-
-1. All underscores will be changed to dashes.
-1. Two leading dashes will be added.
-
-For example:
-
-* field `arg` -> CLI argument `--arg`
-* field `long_arg_name` -> CLI argument `--long-arg-name`
