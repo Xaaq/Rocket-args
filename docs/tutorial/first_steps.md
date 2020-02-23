@@ -12,8 +12,7 @@ class MyArgs(RocketBase):
 !!! note
     You **must** provide type hints for class fields so they can be correctly parsed.
 
-Then what you need is to call `parse_args()` method on class (not instance!) to let all CLI parsing magic
-happen:
+Then what you need is to call `parse_args()` method on class (not instance!) to let all CLI parsing magic happen:
 ```python
 args = MyArgs.parse_args()
 ```
@@ -88,7 +87,7 @@ print(args)
 ```
 
 Every CLI argument whose class field has default value assigned doesn't have to be provided from command line. So
-launching above script without CLI arguments will work:
+launching above script without arguments will work:
 ```
 $ python main.py
 MyArgs(my_int=1234, my_float=12.34, my_str=abcd)
