@@ -50,9 +50,23 @@ class TestParseArgsWithoutUsingArgument:
 
         output = capsys.readouterr().err
         assert "the following arguments are required" in output
+        assert "--arg-1" in output
+        assert "--arg-2" in output
 
-        for name in ["--arg-1", "--arg-2"]:
-            assert name in output
+    @staticmethod
+    def test_help_message_contains_arguments_metadata(capsys: CaptureFixture) -> None:
+        class Args(RocketBase):
+            arg_1: str
+            arg_2: str
+
+        cli_args = ["--help"]
+
+        with patch_cli_args(cli_args), pytest.raises(SystemExit):
+            Args.parse_args()
+
+        output = capsys.readouterr().out
+        assert "--arg-1" in output
+        assert "--arg-2" in output
 
     @staticmethod
     def test_arguments_abbreviations_are_not_allowed(capsys: CaptureFixture) -> None:
@@ -74,7 +88,7 @@ class TestParseArgsUsingArgument:
     @pytest.mark.parametrize(
         "cli_args",
         [["-a", "value"], ["--arg", "value"], ["----long-arg-name", "value"]],
-        ids=["short arg", "long arg", "very long args"],
+        ids=["short arg", "long arg", "very long arg"],
     )
     def test_all_arg_names_can_be_provided_from_cli(cli_args: List[str]) -> None:
         class Args(RocketBase):
@@ -118,7 +132,7 @@ class TestParseArgsUsingArgument:
 
     # noinspection PyUnresolvedReferences
     @staticmethod
-    def test_help_message_contains_arguments_data(capsys: CaptureFixture) -> None:
+    def test_help_message_contains_arguments_metadata(capsys: CaptureFixture) -> None:
         class Args(RocketBase):
             arg_1: str = Argument(names=["-a1", "--arg-1"], help="First argument.")
             arg_2: str = Argument(names=["-a2", "--arg-2"], help="Second argument.")

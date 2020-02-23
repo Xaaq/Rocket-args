@@ -59,17 +59,17 @@ class TestFullArgumentData:
     @staticmethod
     @pytest.mark.parametrize("default, is_required", [["string", False], [None, False], [..., True]])
     def test_is_required(default: Any, is_required: bool) -> None:
-        arg_data = FullArgumentData([], default)
+        arg_data = FullArgumentData(names=[], default=default)
         assert arg_data.is_required == is_required
 
     @staticmethod
     def test_from_raw_data() -> None:
-        name = "arg_name"
+        var_name = "arg_name"
         value = "value"
 
-        arg_data = FullArgumentData.from_raw_data(name, value)
+        arg_data = FullArgumentData.from_raw_data(var_name, value)
 
-        assert arg_data.names == [var_name_to_arg_name(name)]
+        assert arg_data.names == [var_name_to_arg_name(var_name)]
         assert arg_data.default == value
         assert arg_data.help is None
 
