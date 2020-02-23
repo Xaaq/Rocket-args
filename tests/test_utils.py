@@ -71,7 +71,7 @@ class TestFullArgumentData:
 
         assert arg_data.names == [var_name_to_arg_name(name)]
         assert arg_data.default == value
-        assert arg_data.help_message is None
+        assert arg_data.help is None
 
     @staticmethod
     def test_from_user_arg_data_takes_argument_names_if_provided() -> None:
@@ -81,7 +81,7 @@ class TestFullArgumentData:
 
         assert arg_data.names == argument.names
         assert arg_data.default == argument.default
-        assert arg_data.help_message == argument.help
+        assert arg_data.help == argument.help
 
     @staticmethod
     def test_from_user_arg_data_takes_var_name_when_names_not_provided() -> None:
@@ -92,4 +92,4 @@ class TestFullArgumentData:
 
         assert arg_data.names == [var_name_to_arg_name(var_name)]
         assert arg_data.default == argument.default
-        assert arg_data.help_message == argument.help
+        assert arg_data.help == argument.help

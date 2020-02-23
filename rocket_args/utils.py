@@ -1,16 +1,22 @@
 import argparse
 from argparse import Namespace
-from typing import Any, NamedTuple, Optional, Sequence
+from typing import Any, Optional, Sequence
 
-Argument = NamedTuple("Argument", (("names", Optional[Sequence[str]]), ("default", Any), ("help", Optional[str])))
-Argument.__new__.__defaults__ = (None, ..., None)
+
+class Argument:
+    # noinspection PyShadowingBuiltins
+    def __init__(self, names: Optional[Sequence[str]] = None, default: Any = ..., help: Optional[str] = None):
+        self.names = names
+        self.default = default
+        self.help = help
 
 
 class FullArgumentData:
-    def __init__(self, names: Sequence[str], default: Any, help_message: Optional[str] = None):
+    # noinspection PyShadowingBuiltins
+    def __init__(self, names: Sequence[str], default: Any, help: Optional[str] = None):
         self.names = names
         self.default = default
-        self.help_message = help_message
+        self.help = help
 
     @property
     def is_required(self) -> bool:
@@ -24,14 +30,14 @@ class FullArgumentData:
     @classmethod
     def from_user_arg_data(cls, var_name: str, arg_data: Argument) -> "FullArgumentData":
         cli_names = [var_name_to_arg_name(var_name)] if arg_data.names is None else arg_data.names
-        return cls(names=cli_names, default=arg_data.default, help_message=arg_data.help)
+        return cls(names=cli_names, default=arg_data.default, help=arg_data.help)
 
 
 def get_cmd_line_args(args: Sequence[FullArgumentData]) -> Namespace:
     parser = argparse.ArgumentParser(allow_abbrev=False)
 
     for arg in args:
-        parser.add_argument(*arg.names, default=arg.default, required=arg.is_required, help=arg.help_message)
+        parser.add_argument(*arg.names, default=arg.default, required=arg.is_required, help=arg.help)
 
     return parser.parse_args()
 
