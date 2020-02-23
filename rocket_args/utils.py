@@ -3,6 +3,10 @@ from argparse import Namespace
 from typing import Any, Optional, Sequence
 
 
+class Env:
+    pass
+
+
 class Argument:
     # noinspection PyShadowingBuiltins
     def __init__(self, names: Optional[Sequence[str]] = None, default: Any = ..., help: Optional[str] = None):
