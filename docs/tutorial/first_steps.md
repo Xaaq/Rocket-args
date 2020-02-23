@@ -112,15 +112,3 @@ optional arguments:
   --my-float MY_FLOAT
   --my-str MY_STR
 ```
-
-## Generated CLI argument names
-
-For every class field there will be generated CLI argument following these steps:
-
-1. All underscores will be changed to dashes.
-1. Two leading dashes will be added.
-
-For example:
-
-* field `arg` -> CLI argument `--arg`
-* field `long_arg_name` -> CLI argument `--long-arg-name`

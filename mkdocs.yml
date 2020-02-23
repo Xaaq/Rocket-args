@@ -17,4 +17,5 @@ nav:
   - Home: index.md
   - Tutorial:
       - First steps: tutorial/first_steps.md
+      - Arguments: tutorial/arguments.md
   - Contributing: contributing.md
