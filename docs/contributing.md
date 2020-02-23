@@ -71,3 +71,29 @@ To build and live-preview docs use following [mkdocs](https://www.mkdocs.org/) c
 $ mkdocs serve
 ```
 and then paste link outputted by this command to web browser.
+
+## Using Makefile
+
+Instead of having to remember all commands to run tests, lint, checks etc. you can use `make` command to execute them.
+All aliases are specified in `Makefile`.
+
+You can also type `make` to list them:
+```
+$ make
+help                 show this message
+clean                remove all build and test artifacts along with python cache
+type-check           check code for typing errors
+lint                 check code style with flake8
+coverage             check code coverage
+test                 run fast tests using pytest
+test-all             run tests against different python versions using tox
+test-all-fast        run tests against different python versions using tox in parallel
+docs                 build docs and launch them with live-reload
+dist                 builds source and wheel package
+```
+
+Now to use any of these commands type `make <command name>`. For example:
+
+* `make lint` ro run linter,
+* `make test` to run tests,
+* `make docs` to build and reload docs.
