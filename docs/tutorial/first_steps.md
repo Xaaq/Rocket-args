@@ -78,7 +78,7 @@ You can specify default values for your fields:
 from rocket_args import RocketBase
 
 class MyArgs(RocketBase):
-    my_int: int = 123
+    my_int: int = 1234
     my_float: float = 12.34
     my_str: str = "abcd"
 

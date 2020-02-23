@@ -25,15 +25,15 @@ print(args)
 
 Now you can use any of these names in CLI:
 ```
-$ python main.py -a abc
-MyArgs(arg=abc)
-$ python main.py --argument abc
-MyArgs(arg=abc)
+$ python main.py -a abcd
+MyArgs(arg=abcd)
+$ python main.py --argument abcd
+MyArgs(arg=abcd)
 ```
 
 If you specify argument names like above, then default argument names won't be generated:
 ```
-$ python main.py --arg abc
+$ python main.py --arg abcd
 usage: main.py [-h] -a ARGUMENT
 scratch.py: error: the following arguments are required: -a/--argument
 ```
@@ -45,7 +45,7 @@ When using `Argument` you can set default values for your arguments in the other
 from rocket_args import RocketBase, Argument
 
 class MyArgs(RocketBase):
-    my_int: int = Argument(default=123)
+    my_int: int = Argument(default=1234)
     my_float: float = Argument(default=12.34)
     my_str: str = Argument(default="abcd")
 ```
@@ -55,7 +55,7 @@ is equivalent to that:
 from rocket_args import RocketBase
 
 class MyArgs(RocketBase):
-    my_int: int = 123
+    my_int: int = 1234
     my_float: float = 12.34
     my_str: str = "abcd"
 ```
@@ -72,7 +72,6 @@ class MyArgs(RocketBase):
     my_str: str = Argument(help="my str argument")
 
 args = MyArgs.parse_args()
-print(args)
 ```
 
 When launched from command line:
