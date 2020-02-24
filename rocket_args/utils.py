@@ -1,18 +1,10 @@
 import argparse
 from argparse import Namespace
-from typing import Any, Optional, Sequence
+from typing import Any, Callable, Optional, Sequence
 
 
 class Env:
     pass
-
-
-class Argument:
-    # noinspection PyShadowingBuiltins
-    def __init__(self, names: Optional[Sequence[str]] = None, default: Any = ..., help: Optional[str] = None):
-        self.names = names
-        self.default = default
-        self.help = help
 
 
 class FullArgumentData:
@@ -26,10 +18,19 @@ class FullArgumentData:
     def is_required(self) -> bool:
         return self.default is ...
 
-    @classmethod
-    def create(cls, var_name: str, arg_data: Argument) -> "FullArgumentData":
-        cli_names = [var_name_to_arg_name(var_name)] if arg_data.names is None else arg_data.names
-        return cls(names=cli_names, default=arg_data.default, help=arg_data.help)
+
+# noinspection PyShadowingBuiltins
+def create_full_argument_data(
+    names: Optional[Sequence[str]] = None, default: Any = ..., help: Optional[str] = None
+) -> Callable[[str], FullArgumentData]:
+    def create(var_name: str) -> FullArgumentData:
+        cli_names = [var_name_to_arg_name(var_name)] if names is None else names
+        return FullArgumentData(names=cli_names, default=default, help=help)
+
+    return create
+
+
+Argument = create_full_argument_data
 
 
 def get_cmd_line_args(args: Sequence[FullArgumentData]) -> Namespace:

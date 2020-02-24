@@ -3,7 +3,6 @@ from typing import Any, Sequence
 
 import pytest
 
-from rocket_args import Argument
 from rocket_args.utils import FullArgumentData, get_arg_value_from_namespace, var_name_to_arg_name
 
 
@@ -61,24 +60,3 @@ class TestFullArgumentData:
     def test_is_required(default: Any, is_required: bool) -> None:
         arg_data = FullArgumentData(names=[], default=default)
         assert arg_data.is_required == is_required
-
-    @staticmethod
-    def test_from_user_arg_data_takes_argument_names_if_provided() -> None:
-        argument = Argument(names=["-a", "--arg"], default="value", help="help message")
-
-        arg_data = FullArgumentData.create("arg_name", argument)
-
-        assert arg_data.names == argument.names
-        assert arg_data.default == argument.default
-        assert arg_data.help == argument.help
-
-    @staticmethod
-    def test_from_user_arg_data_takes_var_name_when_names_not_provided() -> None:
-        var_name = "arg_name"
-        argument = Argument(default="value", help="help message")
-
-        arg_data = FullArgumentData.create(var_name, argument)
-
-        assert arg_data.names == [var_name_to_arg_name(var_name)]
-        assert arg_data.default == argument.default
-        assert arg_data.help == argument.help

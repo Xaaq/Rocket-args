@@ -6,7 +6,6 @@ from _pytest.capture import CaptureFixture
 
 from rocket_args import Argument
 from rocket_args.main import RocketBase
-from rocket_args.utils import Env
 from tests.utils import patch_cli_args
 
 
@@ -118,9 +117,12 @@ class TestParseArgsUsingArgument:
     # noinspection PyUnresolvedReferences
     @staticmethod
     def test_not_provided_required_arguments_display_appropriate_message(capsys: CaptureFixture) -> None:
+        names_1 = ["-a1", "--arg-1", "----long-arg-1"]
+        names_2 = ["-a2", "--arg-2", "----long-arg-2"]
+
         class Args(RocketBase):
-            arg_1: str = Argument(names=["-a1", "--arg-1", "----long-arg-1"])
-            arg_2: str = Argument(names=["-a2", "--arg-2", "----long-arg-2"])
+            arg_1: str = Argument(names=names_1)
+            arg_2: str = Argument(names=names_2)
 
         with patch_cli_args([]), pytest.raises(SystemExit):
             Args.parse_args()
@@ -128,16 +130,19 @@ class TestParseArgsUsingArgument:
         output = capsys.readouterr().err
         assert "the following arguments are required" in output
 
-        for argument in [Args.arg_1, Args.arg_2]:
-            names = "/".join(argument.names)
+        for name_list in [names_1, names_2]:
+            names = "/".join(name_list)
             assert names in output
 
     # noinspection PyUnresolvedReferences
     @staticmethod
     def test_help_message_contains_arguments_metadata(capsys: CaptureFixture) -> None:
+        arg_data_1 = dict(names=["-a1", "--arg-1"], help="First argument.")
+        arg_data_2 = dict(names=["-a2", "--arg-2"], help="Second argument.")
+
         class Args(RocketBase):
-            arg_1: str = Argument(names=["-a1", "--arg-1"], help="First argument.")
-            arg_2: str = Argument(names=["-a2", "--arg-2"], help="Second argument.")
+            arg_1: str = Argument(names=arg_data_1["names"], help=arg_data_1["help"])
+            arg_2: str = Argument(names=arg_data_2["names"], help=arg_data_2["help"])
 
         cli_args = ["--help"]
 
@@ -146,10 +151,10 @@ class TestParseArgsUsingArgument:
 
         output = capsys.readouterr().out
 
-        for argument in [Args.arg_1, Args.arg_2]:
-            for name in argument.names:
+        for argument in [arg_data_1, arg_data_2]:
+            for name in argument["names"]:
                 assert name in output
-            assert argument.help in output
+            assert argument["help"] in output
 
 
 class TestParseArgsUsingEnv:

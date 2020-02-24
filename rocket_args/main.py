@@ -1,6 +1,6 @@
 from typing import Any, Type, TypeVar
 
-from rocket_args.utils import Argument, FullArgumentData, get_arg_value_from_namespace, get_cmd_line_args
+from rocket_args.utils import Argument, get_arg_value_from_namespace, get_cmd_line_args
 
 T = TypeVar("T", bound="RocketBase")
 
@@ -19,13 +19,12 @@ class RocketBase:
     def parse_args(cls: Type[T]) -> T:
         field_names_with_types = cls.__annotations__.items()
         field_names_to_default = {name: cls.__dict__.get(name, ...) for name, _ in field_names_with_types}
+        argument_type = type(Argument())
         args = [
-            Argument(default=default) if not isinstance(default, Argument) else default
+            Argument(default=default) if not isinstance(default, argument_type) else default
             for default in field_names_to_default.values()
         ]
-        args_with_metadata = [
-            FullArgumentData.create(name, arg) for name, arg in zip(field_names_to_default.keys(), args)
-        ]
+        args_with_metadata = [arg(name) for name, arg in zip(field_names_to_default.keys(), args)]
 
         cmd_line_args = get_cmd_line_args(args_with_metadata)
 
