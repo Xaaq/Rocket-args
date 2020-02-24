@@ -27,12 +27,7 @@ class FullArgumentData:
         return self.default is ...
 
     @classmethod
-    def from_raw_data(cls, var_name: str, default: Any) -> "FullArgumentData":
-        cli_name = var_name_to_arg_name(var_name)
-        return cls(names=[cli_name], default=default)
-
-    @classmethod
-    def from_user_arg_data(cls, var_name: str, arg_data: Argument) -> "FullArgumentData":
+    def create(cls, var_name: str, arg_data: Argument) -> "FullArgumentData":
         cli_names = [var_name_to_arg_name(var_name)] if arg_data.names is None else arg_data.names
         return cls(names=cli_names, default=arg_data.default, help=arg_data.help)
 

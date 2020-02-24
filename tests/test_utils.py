@@ -63,21 +63,10 @@ class TestFullArgumentData:
         assert arg_data.is_required == is_required
 
     @staticmethod
-    def test_from_raw_data() -> None:
-        var_name = "arg_name"
-        value = "value"
-
-        arg_data = FullArgumentData.from_raw_data(var_name, value)
-
-        assert arg_data.names == [var_name_to_arg_name(var_name)]
-        assert arg_data.default == value
-        assert arg_data.help is None
-
-    @staticmethod
     def test_from_user_arg_data_takes_argument_names_if_provided() -> None:
         argument = Argument(names=["-a", "--arg"], default="value", help="help message")
 
-        arg_data = FullArgumentData.from_user_arg_data("arg_name", argument)
+        arg_data = FullArgumentData.create("arg_name", argument)
 
         assert arg_data.names == argument.names
         assert arg_data.default == argument.default
@@ -88,7 +77,7 @@ class TestFullArgumentData:
         var_name = "arg_name"
         argument = Argument(default="value", help="help message")
 
-        arg_data = FullArgumentData.from_user_arg_data(var_name, argument)
+        arg_data = FullArgumentData.create(var_name, argument)
 
         assert arg_data.names == [var_name_to_arg_name(var_name)]
         assert arg_data.default == argument.default
