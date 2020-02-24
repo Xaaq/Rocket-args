@@ -19,18 +19,19 @@ class FullArgumentData:
         return self.default is ...
 
 
-# noinspection PyShadowingBuiltins
-def create_full_argument_data(
-    names: Optional[Sequence[str]] = None, default: Any = ..., help: Optional[str] = None
-) -> Callable[[str], FullArgumentData]:
-    def create(var_name: str) -> FullArgumentData:
-        cli_names = [var_name_to_arg_name(var_name)] if names is None else names
-        return FullArgumentData(names=cli_names, default=default, help=help)
+class FullArgumentDataFactory:
+    # noinspection PyShadowingBuiltins
+    def __init__(self, names: Optional[Sequence[str]] = None, default: Any = ..., help: Optional[str] = None):
+        self.names = names
+        self.default = default
+        self.help = help
 
-    return create
+    def create(self, var_name: str) -> FullArgumentData:
+        cli_names = [var_name_to_arg_name(var_name)] if self.names is None else self.names
+        return FullArgumentData(names=cli_names, default=self.default, help=self.help)
 
 
-Argument = create_full_argument_data
+Argument = FullArgumentDataFactory
 
 
 def get_cmd_line_args(args: Sequence[FullArgumentData]) -> Namespace:

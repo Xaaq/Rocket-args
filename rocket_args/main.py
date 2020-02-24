@@ -19,12 +19,11 @@ class RocketBase:
     def parse_args(cls: Type[T]) -> T:
         field_names_with_types = cls.__annotations__.items()
         field_names_to_default = {name: cls.__dict__.get(name, ...) for name, _ in field_names_with_types}
-        argument_type = type(Argument())
         args = [
-            Argument(default=default) if not isinstance(default, argument_type) else default
+            Argument(default=default) if not isinstance(default, Argument) else default
             for default in field_names_to_default.values()
         ]
-        args_with_metadata = [arg(name) for name, arg in zip(field_names_to_default.keys(), args)]
+        args_with_metadata = [arg.create(name) for arg, name in zip(args, field_names_to_default.keys())]
 
         cmd_line_args = get_cmd_line_args(args_with_metadata)
 

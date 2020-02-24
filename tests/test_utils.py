@@ -1,9 +1,14 @@
 from argparse import Namespace
-from typing import Any, Sequence
+from typing import Any, List, Sequence
 
 import pytest
 
-from rocket_args.utils import FullArgumentData, get_arg_value_from_namespace, var_name_to_arg_name
+from rocket_args.utils import (
+    FullArgumentData,
+    FullArgumentDataFactory,
+    get_arg_value_from_namespace,
+    var_name_to_arg_name,
+)
 
 
 def test_var_name_to_arg_name() -> None:
@@ -56,7 +61,31 @@ def test_get_arg_value_from_namespace(cli_arg_names: Sequence[str], namespace: N
 
 class TestFullArgumentData:
     @staticmethod
-    @pytest.mark.parametrize("default, is_required", [["string", False], [None, False], [..., True]])
+    @pytest.mark.parametrize(
+        "default, is_required",
+        [["string", False], [None, False], [..., True]],
+        ids=["string input", "None input", "ellipsis input"],
+    )
     def test_is_required(default: Any, is_required: bool) -> None:
         arg_data = FullArgumentData(names=[], default=default)
         assert arg_data.is_required == is_required
+
+
+class TestFullArgumentDataFactory:
+    @staticmethod
+    @pytest.mark.parametrize(
+        "user_provided_names, expected_names",
+        [[["-a", "--arg"], ["-a", "--arg"]], [None, ["--var-name"]]],
+        ids=["input names are provided", "input names are None"],
+    )
+    def test_create(user_provided_names: List[str], expected_names: str):
+        var_name = "var_name"
+        default = "default"
+        help_message = "help"
+
+        factory = FullArgumentDataFactory(names=user_provided_names, default=default, help=help_message)
+        arg_data = factory.create(var_name)
+
+        assert arg_data.names == expected_names
+        assert arg_data.default == default
+        assert arg_data.help == help_message
