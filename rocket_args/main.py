@@ -1,6 +1,8 @@
 from typing import Any, Type, TypeVar
 
-from rocket_args.utils import Argument, get_arg_value_from_namespace, get_cmd_line_args
+from rocket_args.cli import get_cli_args
+from rocket_args.env import get_env_args
+from rocket_args.utils import Argument, FieldData, get_defaults
 
 T = TypeVar("T", bound="RocketBase")
 
@@ -17,18 +19,16 @@ class RocketBase:
 
     @classmethod
     def parse_args(cls: Type[T]) -> T:
-        field_names_with_types = cls.__annotations__.items()
-        field_names_to_default = {name: cls.__dict__.get(name, ...) for name, _ in field_names_with_types}
-        args = [
-            Argument(default=default) if not isinstance(default, Argument) else default
-            for default in field_names_to_default.values()
-        ]
-        args_with_metadata = [arg.create(name) for arg, name in zip(args, field_names_to_default.keys())]
-
-        cmd_line_args = get_cmd_line_args(args_with_metadata)
-
-        parsed_args = {
-            arg_name: arg_type(get_arg_value_from_namespace(arg_data.names, cmd_line_args))
-            for arg_data, (arg_name, arg_type) in zip(args_with_metadata, field_names_with_types)
+        field_names_with_types = cls.__annotations__
+        defaults = [cls.__dict__.get(name, ...) for name in field_names_with_types.keys()]
+        args = [Argument(default=default) if not isinstance(default, Argument) else default for default in defaults]
+        field_to_arg = {
+            FieldData(arg_name, arg_type): arg_data
+            for (arg_name, arg_type), arg_data in zip(field_names_with_types.items(), args)
         }
-        return cls(**parsed_args)
+
+        parsed_defaults = get_defaults(field_to_arg)
+        parsed_env_args = get_env_args(field_to_arg)
+        parsed_cli_args = get_cli_args(field_to_arg)
+        joined_args = {**parsed_defaults, **parsed_env_args, **parsed_cli_args}
+        return cls(**joined_args)

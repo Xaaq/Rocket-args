@@ -93,7 +93,7 @@ class TestParseArgsUsingArgument:
     )
     def test_all_arg_names_can_be_provided_from_cli(cli_args: List[str]) -> None:
         class Args(RocketBase):
-            arg: str = Argument(names=["-a", "--arg", "----long-arg-name"])
+            arg: str = Argument(cli_names=["-a", "--arg", "----long-arg-name"])
 
         with patch_cli_args(cli_args):
             output_args = Args.parse_args()
@@ -118,8 +118,8 @@ class TestParseArgsUsingArgument:
     @staticmethod
     def test_not_provided_required_arguments_display_appropriate_message(capsys: CaptureFixture) -> None:
         class Args(RocketBase):
-            arg_1: str = Argument(names=["-a1", "--arg-1", "----long-arg-1"])
-            arg_2: str = Argument(names=["-a2", "--arg-2", "----long-arg-2"])
+            arg_1: str = Argument(cli_names=["-a1", "--arg-1", "----long-arg-1"])
+            arg_2: str = Argument(cli_names=["-a2", "--arg-2", "----long-arg-2"])
 
         with patch_cli_args([]), pytest.raises(SystemExit):
             Args.parse_args()
@@ -128,15 +128,15 @@ class TestParseArgsUsingArgument:
         assert "the following arguments are required" in output
 
         for argument in [Args.arg_1, Args.arg_2]:
-            names = "/".join(argument.names)
+            names = "/".join(argument.cli_names)
             assert names in output
 
     # noinspection PyUnresolvedReferences
     @staticmethod
     def test_help_message_contains_arguments_metadata(capsys: CaptureFixture) -> None:
         class Args(RocketBase):
-            arg_1: str = Argument(names=["-a1", "--arg-1"], help="First argument.")
-            arg_2: str = Argument(names=["-a2", "--arg-2"], help="Second argument.")
+            arg_1: str = Argument(cli_names=["-a1", "--arg-1"], help="First argument.")
+            arg_2: str = Argument(cli_names=["-a2", "--arg-2"], help="Second argument.")
 
         cli_args = ["--help"]
 
@@ -146,7 +146,7 @@ class TestParseArgsUsingArgument:
         output = capsys.readouterr().out
 
         for argument in [Args.arg_1, Args.arg_2]:
-            for name in argument.names:
+            for name in argument.cli_names:
                 assert name in output
             assert argument.help in output
 
