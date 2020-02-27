@@ -1,10 +1,6 @@
 import argparse
 from argparse import Namespace
-from typing import Any, Callable, Optional, Sequence
-
-
-class Env:
-    pass
+from typing import Any, Optional, Sequence
 
 
 class FullArgumentData:

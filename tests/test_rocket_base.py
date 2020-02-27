@@ -1,4 +1,3 @@
-import os
 from typing import List
 
 import pytest
@@ -149,44 +148,6 @@ class TestParseArgsUsingArgument:
             for name in argument.names:
                 assert name in output
             assert argument.help in output
-
-
-class TestParseArgsUsingEnv:
-    @staticmethod
-    @pytest.mark.skip
-    def test_cli_arguments_are_not_generated() -> None:
-        class Args(RocketBase):
-            arg_1: str = Argument(env="ARG_1")
-            arg_2: str = Argument(env="ARG_2")
-            arg_3: str = Argument(env="ARG_3")
-
-        value = "value"
-        cli_args = ["--arg-1", value, "--arg-2", value, "--arg-3", value]
-
-        with patch_cli_args(cli_args):
-            args = Args.parse_args()
-
-        assert args.arg_1 != value
-        assert args.arg_2 != value
-        assert args.arg_3 != value
-
-    @staticmethod
-    @pytest.mark.skip
-    def test_provided_env_vars_return_appropriate_values() -> None:
-        class Args(RocketBase):
-            arg_int: int = Argument(env="ARG_INT")
-            arg_float: float = Argument(env="ARG_FLOAT")
-            arg_str: str = Argument(env="ARG_STR")
-
-        os.environ["ARG_INT"] = "1234"
-        os.environ["ARG_FLOAT"] = "12.34"
-        os.environ["ARG_STR"] = "abcd"
-
-        args = Args.parse_args()
-
-        assert args.arg_int == 1234
-        assert args.arg_float == 12.34
-        assert args.arg_str == "abcd"
 
 
 class TestRepr:
