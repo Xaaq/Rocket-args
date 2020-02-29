@@ -1,29 +1,6 @@
 import argparse
 from argparse import Namespace
-from typing import Any, Dict, NamedTuple, Optional, Sequence
-
-from rocket_args.utils import Argument, FieldData
-
-
-def get_cli_args(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
-    cli_names = [
-        arg.cli_names if arg.cli_names else [var_name_to_arg_name(field.name)] for field, arg in field_to_arg.items()
-    ]
-    cli_args_data = [
-        FullArgumentData(names=names, default=..., is_required=arg.default is ..., help=arg.help)
-        for names, arg in zip(cli_names, field_to_arg.values())
-    ]
-
-    namespace = get_cmd_line_args(cli_args_data)
-
-    cli_values = [get_arg_from_namespace(namespace, arg.names) for arg in cli_args_data]
-    name_to_value = {
-        field.name: field.type(cli_value)
-        for field, cli_value in zip(field_to_arg.keys(), cli_values)
-        if cli_value is not ...
-    }
-    return name_to_value
-
+from typing import Any, NamedTuple, Optional, Sequence
 
 FullArgumentData = NamedTuple(
     "FullArgumentData", (("names", Sequence[str]), ("default", Any), ("is_required", bool), ("help", Optional[str]))
