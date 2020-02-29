@@ -1,8 +1,7 @@
 from typing import Any, Type, TypeVar
 
 from rocket_args.cli import get_cli_args
-from rocket_args.env import get_env_args
-from rocket_args.utils import Argument, FieldData, get_defaults
+from rocket_args.utils import Argument, FieldData, get_defaults, get_env_args
 
 T = TypeVar("T", bound="RocketBase")
 

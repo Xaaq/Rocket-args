@@ -1,6 +1,6 @@
 import argparse
 from argparse import Namespace
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Dict, NamedTuple, Optional, Sequence
 
 from rocket_args.utils import Argument, FieldData
 
@@ -25,14 +25,9 @@ def get_cli_args(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
     return name_to_value
 
 
-class FullArgumentData:
-    # noinspection PyShadowingBuiltins
-
-    def __init__(self, names: Sequence[str], default: Any, is_required: bool, help: Optional[str]):
-        self.names = names
-        self.default = default
-        self.is_required = is_required
-        self.help = help
+FullArgumentData = NamedTuple(
+    "FullArgumentData", (("names", Sequence[str]), ("default", Any), ("is_required", bool), ("help", Optional[str]))
+)
 
 
 def var_name_to_arg_name(arg_name: str) -> str:

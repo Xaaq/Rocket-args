@@ -150,15 +150,13 @@ class TestParseArgsUsingArgument:
                 assert name in output
             assert argument.help in output
 
-
-class TestParseArgsUsingEnv:
     @staticmethod
     @pytest.mark.skip
     def test_cli_arguments_are_not_generated() -> None:
         class Args(RocketBase):
-            arg_1: str = Argument(env="ARG_1")
-            arg_2: str = Argument(env="ARG_2")
-            arg_3: str = Argument(env="ARG_3")
+            arg_1: str = Argument(env_name="ARG_1")
+            arg_2: str = Argument(env_name="ARG_2")
+            arg_3: str = Argument(env_name="ARG_3")
 
         value = "value"
         cli_args = ["--arg-1", value, "--arg-2", value, "--arg-3", value]
@@ -174,9 +172,9 @@ class TestParseArgsUsingEnv:
     @pytest.mark.skip
     def test_provided_env_vars_return_appropriate_values() -> None:
         class Args(RocketBase):
-            arg_int: int = Argument(env="ARG_INT")
-            arg_float: float = Argument(env="ARG_FLOAT")
-            arg_str: str = Argument(env="ARG_STR")
+            arg_int: int = Argument(env_name="ARG_INT")
+            arg_float: float = Argument(env_name="ARG_FLOAT")
+            arg_str: str = Argument(env_name="ARG_STR")
 
         os.environ["ARG_INT"] = "1234"
         os.environ["ARG_FLOAT"] = "12.34"

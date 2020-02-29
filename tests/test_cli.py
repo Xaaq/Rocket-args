@@ -49,6 +49,6 @@ def test_var_name_to_arg_name() -> None:
         "1, 4 and 2-dash args",
     ],
 )
-def test_get_arg_value_from_namespace(cli_arg_names: Sequence[str], namespace: Namespace) -> None:
+def test_get_arg_from_namespace(cli_arg_names: Sequence[str], namespace: Namespace) -> None:
     result = get_arg_from_namespace(namespace, cli_arg_names)
     assert result == "value"
