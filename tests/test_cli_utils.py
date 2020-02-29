@@ -1,9 +1,10 @@
 from argparse import Namespace
 from typing import Sequence
+from unittest.mock import call, patch
 
 import pytest
 
-from rocket_args.cli import get_arg_from_namespace, var_name_to_arg_name
+from rocket_args.cli_utils import FullArgumentData, get_arg_from_namespace, get_cmd_line_args, var_name_to_arg_name
 
 
 def test_var_name_to_arg_name() -> None:
@@ -12,6 +13,19 @@ def test_var_name_to_arg_name() -> None:
 
     actual_value = var_name_to_arg_name(input_arg)
     assert actual_value == expected_arg
+
+
+def test_get_cmd_line_args() -> None:
+    args = [
+        FullArgumentData(names=["-a1", "--arg-1"], default=..., is_required=True, help="help message 1"),
+        FullArgumentData(names=["-a2", "--arg-2"], default="default", is_required=False, help="help message 2"),
+    ]
+
+    with patch("argparse.ArgumentParser.parse_args"), patch("argparse.ArgumentParser.add_argument") as add_argument:
+        get_cmd_line_args(args)
+
+    calls = [call(*arg.names, default=arg.default, required=arg.is_required, help=arg.help) for arg in args]
+    add_argument.assert_has_calls(calls)
 
 
 @pytest.mark.parametrize(

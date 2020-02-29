@@ -2,7 +2,7 @@ import os
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Type, TypeVar
 
-from rocket_args.cli import FullArgumentData, get_arg_from_namespace, get_cmd_line_args, var_name_to_arg_name
+from rocket_args.cli_utils import FullArgumentData, get_arg_from_namespace, get_cmd_line_args, var_name_to_arg_name
 from rocket_args.utils import Argument, FieldData
 
 T = TypeVar("T", bound="RocketBase")
