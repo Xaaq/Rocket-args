@@ -1,4 +1,4 @@
-from typing import Any, NamedTuple, Optional, Sequence
+from typing import Any, NamedTuple, Optional, Sequence, Union
 
 FieldData = NamedTuple("FieldData", (("name", str), ("type", Any)))
 
@@ -7,8 +7,8 @@ class Argument:
     # noinspection PyShadowingBuiltins
     def __init__(
         self,
-        cli_names: Optional[Sequence[str]] = None,
-        env_name: Optional[str] = None,
+        cli_names: Union[bool, Sequence[str]] = True,
+        env_name: Union[bool, str] = True,
         default: Any = ...,
         help: Optional[str] = None,
     ):

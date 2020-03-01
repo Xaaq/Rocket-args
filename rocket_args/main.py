@@ -44,22 +44,23 @@ class Parsable(ABC):
 class CliParser(Parsable):
     @staticmethod
     def parse(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
+        cli_field_to_arg = {field: arg for field, arg in field_to_arg.items() if arg.cli_names}
         cli_names = [
-            arg.cli_names if arg.cli_names else [var_name_to_arg_name(field.name)]
-            for field, arg in field_to_arg.items()
+            arg.cli_names if isinstance(arg.cli_names, list) else [var_name_to_arg_name(field.name)]
+            for field, arg in cli_field_to_arg.items()
         ]
         cli_args_data = [
             FullArgumentData(names=names, default=..., is_required=arg.default is ..., help=arg.help)
-            for names, arg in zip(cli_names, field_to_arg.values())
+            for names, arg in zip(cli_names, cli_field_to_arg.values())
         ]
 
         namespace = get_cmd_line_args(cli_args_data)
 
         cli_values = [get_arg_from_namespace(namespace, arg.names) for arg in cli_args_data]
         name_to_value = {
-            field.name: field.type(cli_value)
-            for field, cli_value in zip(field_to_arg.keys(), cli_values)
-            if cli_value is not ...
+            field.name: field.type(value)
+            for field, value in zip(cli_field_to_arg.keys(), cli_values)
+            if value is not ...
         }
         return name_to_value
 
@@ -67,12 +68,16 @@ class CliParser(Parsable):
 class EnvParser(Parsable):
     @staticmethod
     def parse(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
-        env_names = [arg.env_name if arg.env_name else field.name.upper() for field, arg in field_to_arg.items()]
+        env_field_to_arg = {field: arg for field, arg in field_to_arg.items() if arg.env_name}
+        env_names = [
+            arg.env_name if isinstance(arg.env_name, str) else field.name.upper()
+            for field, arg in env_field_to_arg.items()
+        ]
         env_values = [os.environ.get(name, ...) for name in env_names]
         name_to_value = {
-            field.name: field.type(env_value)
-            for field, env_value in zip(field_to_arg.keys(), env_values)
-            if env_value is not ...
+            field.name: field.type(value)
+            for field, value in zip(env_field_to_arg.keys(), env_values)
+            if value is not ...
         }
         return name_to_value
 
