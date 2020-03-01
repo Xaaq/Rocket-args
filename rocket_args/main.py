@@ -1,4 +1,5 @@
 import os
+import sys
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Type, TypeVar
 
@@ -54,18 +55,11 @@ class EnvParser(Parsable):
         return name_to_value
 
 
-class DefaultsParser(Parsable):
-    @classmethod
-    def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
-        name_to_value = {field.name: arg.default for field, arg in field_to_arg.items() if arg.default is not ...}
-        return name_to_value
-
-
 T = TypeVar("T", bound="RocketBase")
 
 
 class RocketBase:
-    __parsers: List[Parsable] = [DefaultsParser(), EnvParser(), CliParser()]
+    __parsers: List[Parsable] = [EnvParser(), CliParser()]
 
     def __init__(self, **data: Any):
         for name, value in data.items():
@@ -85,7 +79,7 @@ class RocketBase:
         if absent_args:
             joined_args = ", ".join(absent_args)
             print(f"Required args: {joined_args}")
-            exit(2)
+            sys.exit(2)
 
         return cls(**parsed_args)
 
@@ -102,6 +96,7 @@ class RocketBase:
 
     @classmethod
     def __parse_args(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
-        parsed_args = [parser.parse(field_to_arg) for parser in cls.__parsers]
+        defaults = {field.name: arg.default for field, arg in field_to_arg.items() if arg.default is not ...}
+        parsed_args = [defaults] + [parser.parse(field_to_arg) for parser in cls.__parsers]
         joined_args = {key: value for args in parsed_args for key, value in args.items()}
         return joined_args
