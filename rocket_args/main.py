@@ -1,56 +1,32 @@
 import os
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Type, TypeVar
+from typing import Any, Dict, List, Type, TypeVar
 
 from rocket_args.cli_utils import FullArgumentData, get_arg_from_namespace, get_cmd_line_args, var_name_to_arg_name
 from rocket_args.utils import Argument, FieldData
 
-T = TypeVar("T", bound="RocketBase")
-
-
-class RocketBase:
-    def __init__(self, **data: Any):
-        for name, value in data.items():
-            self.__setattr__(name, value)
-
-    def __repr__(self) -> str:
-        args = [f"{name}={value}" for name, value in self.__dict__.items()]
-        concatenated_args = ", ".join(args)
-        return f"{self.__class__.__name__}({concatenated_args})"
-
-    @classmethod
-    def parse_args(cls: Type[T]) -> T:
-        field_names_with_types = cls.__annotations__
-        defaults = [cls.__dict__.get(name, ...) for name in field_names_with_types.keys()]
-        args = [Argument(default=default) if not isinstance(default, Argument) else default for default in defaults]
-        field_to_arg = {
-            FieldData(arg_name, arg_type): arg_data
-            for (arg_name, arg_type), arg_data in zip(field_names_with_types.items(), args)
-        }
-
-        parsers = [DefaultsParser(), EnvParser(), CliParser()]
-        parsed_args = [parser.parse(field_to_arg) for parser in parsers]
-        joined_args = {key: value for args in parsed_args for key, value in args.items()}
-        return cls(**joined_args)
-
 
 class Parsable(ABC):
-    @staticmethod
+    @classmethod
     @abstractmethod
-    def parse(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
+    def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
         pass
+
+    @staticmethod
+    def get_arg_name(field_name: str) -> str:
+        return field_name
 
 
 class CliParser(Parsable):
-    @staticmethod
-    def parse(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
+    @classmethod
+    def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
         cli_field_to_arg = {field: arg for field, arg in field_to_arg.items() if arg.cli_names}
         cli_names = [
-            arg.cli_names if isinstance(arg.cli_names, list) else [var_name_to_arg_name(field.name)]
+            arg.cli_names if isinstance(arg.cli_names, list) else [cls.get_arg_name(field.name)]
             for field, arg in cli_field_to_arg.items()
         ]
         cli_args_data = [
-            FullArgumentData(names=names, default=..., is_required=arg.default is ..., help=arg.help)
+            FullArgumentData(names=names, default=..., help=arg.help)
             for names, arg in zip(cli_names, cli_field_to_arg.values())
         ]
 
@@ -64,13 +40,18 @@ class CliParser(Parsable):
         }
         return name_to_value
 
+    @staticmethod
+    def get_arg_name(field_name: str) -> str:
+        arg_name = field_name.replace("_", "-")
+        return f"--{arg_name}"
+
 
 class EnvParser(Parsable):
-    @staticmethod
-    def parse(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
+    @classmethod
+    def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
         env_field_to_arg = {field: arg for field, arg in field_to_arg.items() if arg.env_name}
         env_names = [
-            arg.env_name if isinstance(arg.env_name, str) else field.name.upper()
+            arg.env_name if isinstance(arg.env_name, str) else cls.get_arg_name(field.name)
             for field, arg in env_field_to_arg.items()
         ]
         env_values = [os.environ.get(name, ...) for name in env_names]
@@ -81,9 +62,59 @@ class EnvParser(Parsable):
         }
         return name_to_value
 
+    @staticmethod
+    def get_arg_name(field_name: str) -> str:
+        return field_name.upper()
+
 
 class DefaultsParser(Parsable):
-    @staticmethod
-    def parse(field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
-        name_to_value = {field.name: arg.default for field, arg in field_to_arg.items()}
+    @classmethod
+    def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
+        name_to_value = {field.name: arg.default for field, arg in field_to_arg.items() if arg.default is not ...}
         return name_to_value
+
+
+T = TypeVar("T", bound="RocketBase")
+
+
+class RocketBase:
+    __parsers: List[Parsable] = [DefaultsParser(), EnvParser(), CliParser()]
+
+    def __init__(self, **data: Any):
+        for name, value in data.items():
+            self.__setattr__(name, value)
+
+    def __repr__(self) -> str:
+        args = [f"{name}={value}" for name, value in self.__dict__.items()]
+        concatenated_args = ", ".join(args)
+        return f"{self.__class__.__name__}({concatenated_args})"
+
+    @classmethod
+    def parse_args(cls: Type[T]) -> T:
+        field_to_arg = cls.__create_field_to_arg_map()
+        parsed_args = cls.__parse_args(field_to_arg)
+
+        absent_args = {field: arg for field, arg in field_to_arg.items() if field.name not in parsed_args}
+        if absent_args:
+            print("required args:")
+            for field, arg in absent_args.items():
+                print(f"\t{field.name} - {arg.cli_names} - {arg.env_name}")
+            exit(2)
+        return cls(**parsed_args)
+
+    @classmethod
+    def __create_field_to_arg_map(cls) -> Dict[FieldData, Argument]:
+        field_names_with_types = cls.__annotations__
+        defaults = [cls.__dict__.get(name, ...) for name in field_names_with_types.keys()]
+        args = [Argument(default=default) if not isinstance(default, Argument) else default for default in defaults]
+        field_to_arg = {
+            FieldData(arg_name, arg_type): arg_data
+            for (arg_name, arg_type), arg_data in zip(field_names_with_types.items(), args)
+        }
+        return field_to_arg
+
+    @classmethod
+    def __parse_args(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
+        parsed_args = [parser.parse(field_to_arg) for parser in cls.__parsers]
+        joined_args = {key: value for args in parsed_args for key, value in args.items()}
+        return joined_args

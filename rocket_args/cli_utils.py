@@ -2,9 +2,7 @@ import argparse
 from argparse import Namespace
 from typing import Any, NamedTuple, Optional, Sequence
 
-FullArgumentData = NamedTuple(
-    "FullArgumentData", (("names", Sequence[str]), ("default", Any), ("is_required", bool), ("help", Optional[str]))
-)
+FullArgumentData = NamedTuple("FullArgumentData", (("names", Sequence[str]), ("default", Any), ("help", Optional[str])))
 
 
 def var_name_to_arg_name(arg_name: str) -> str:
@@ -16,7 +14,7 @@ def get_cmd_line_args(args: Sequence[FullArgumentData]) -> Namespace:
     parser = argparse.ArgumentParser(allow_abbrev=False)
 
     for arg in args:
-        parser.add_argument(*arg.names, default=arg.default, required=arg.is_required, help=arg.help)
+        parser.add_argument(*arg.names, default=arg.default, help=arg.help)
 
     return parser.parse_args()
 
