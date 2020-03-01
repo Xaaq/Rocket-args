@@ -12,17 +12,13 @@ class Parsable(ABC):
     def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
         pass
 
-    @staticmethod
-    def get_arg_name(field_name: str) -> str:
-        return field_name
-
 
 class CliParser(Parsable):
     @classmethod
     def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
         cli_field_to_arg = {field: arg for field, arg in field_to_arg.items() if arg.cli_names}
         cli_names = [
-            arg.cli_names if isinstance(arg.cli_names, list) else [cls.get_arg_name(field.name)]
+            arg.cli_names if isinstance(arg.cli_names, list) else [var_name_to_arg_name(field.name)]
             for field, arg in cli_field_to_arg.items()
         ]
         cli_args_data = [
@@ -40,18 +36,13 @@ class CliParser(Parsable):
         }
         return name_to_value
 
-    @staticmethod
-    def get_arg_name(field_name: str) -> str:
-        arg_name = field_name.replace("_", "-")
-        return f"--{arg_name}"
-
 
 class EnvParser(Parsable):
     @classmethod
     def parse(cls, field_to_arg: Dict[FieldData, Argument]) -> Dict[str, Any]:
         env_field_to_arg = {field: arg for field, arg in field_to_arg.items() if arg.env_name}
         env_names = [
-            arg.env_name if isinstance(arg.env_name, str) else cls.get_arg_name(field.name)
+            arg.env_name if isinstance(arg.env_name, str) else field.name.upper()
             for field, arg in env_field_to_arg.items()
         ]
         env_values = [os.environ.get(name, ...) for name in env_names]
@@ -61,10 +52,6 @@ class EnvParser(Parsable):
             if value is not ...
         }
         return name_to_value
-
-    @staticmethod
-    def get_arg_name(field_name: str) -> str:
-        return field_name.upper()
 
 
 class DefaultsParser(Parsable):
@@ -94,12 +81,12 @@ class RocketBase:
         field_to_arg = cls.__create_field_to_arg_map()
         parsed_args = cls.__parse_args(field_to_arg)
 
-        absent_args = {field: arg for field, arg in field_to_arg.items() if field.name not in parsed_args}
+        absent_args = [field.name for field in field_to_arg.keys() if field.name not in parsed_args]
         if absent_args:
-            print("required args:")
-            for field, arg in absent_args.items():
-                print(f"\t{field.name} - {arg.cli_names} - {arg.env_name}")
+            joined_args = ", ".join(absent_args)
+            print(f"Required args: {joined_args}")
             exit(2)
+
         return cls(**parsed_args)
 
     @classmethod
