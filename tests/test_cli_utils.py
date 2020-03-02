@@ -17,14 +17,14 @@ def test_var_name_to_arg_name() -> None:
 
 def test_get_cmd_line_args() -> None:
     args = [
-        FullArgumentData(names=["-a1", "--arg-1"], default=..., is_required=True, help="help message 1"),
-        FullArgumentData(names=["-a2", "--arg-2"], default="default", is_required=False, help="help message 2"),
+        FullArgumentData(names=["-a1", "--arg-1"], default=..., help="help message 1"),
+        FullArgumentData(names=["-a2", "--arg-2"], default="default", help="help message 2"),
     ]
 
     with patch("argparse.ArgumentParser.parse_args"), patch("argparse.ArgumentParser.add_argument") as add_argument:
         get_cmd_line_args(args)
 
-    calls = [call(*arg.names, default=arg.default, required=arg.is_required, help=arg.help) for arg in args]
+    calls = [call(*arg.names, default=arg.default, help=arg.help) for arg in args]
     add_argument.assert_has_calls(calls)
 
 
