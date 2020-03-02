@@ -1,7 +1,7 @@
 import argparse
 import os
 from contextlib import contextmanager
-from typing import Dict, Generator, List
+from typing import Generator, List
 
 
 @contextmanager
