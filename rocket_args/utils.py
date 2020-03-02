@@ -1,6 +1,6 @@
 from typing import Any, NamedTuple, Optional, Sequence, Union
 
-FieldData = NamedTuple("FieldData", (("name", str), ("type", Any)))
+Field = NamedTuple("Field", (("name", str), ("type", Any)))
 
 
 class Argument:
