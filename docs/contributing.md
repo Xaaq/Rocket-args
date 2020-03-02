@@ -4,7 +4,7 @@ Below you will find instructions how to setup environment, launch tests, build d
 
 ## Setup environment
 
-Before you start install [pyenv]https://github.com/pyenv/pyenv) if you haven't yet - it is tool for managing python
+Before you start install [pyenv](https://github.com/pyenv/pyenv) if you haven't yet - it is tool for managing python
 versions.
 
 1. Clone repo.
