@@ -1,4 +1,3 @@
-import os
 from typing import List
 
 import pytest
@@ -27,18 +26,18 @@ class TestParseArgsWithoutUsingArgument:
         assert output_args.arg_float == 123.456
 
     @staticmethod
-    def test_not_provided_arguments_fallback_to_defaults() -> None:
+    def test_args_have_appropriate_priorities_first_cli_then_env_then_default() -> None:
         class Args(RocketBase):
-            arg_int: int = 123
-            arg_str: str = "abc"
-            arg_float: float = 123.456
+            arg_1: str = "default_value"
+            arg_2: str = "default_value"
+            arg_3: str = "default_value"
 
-        with patch_cli_args([]):
-            output_args = Args.parse_args()
+        with patch_cli_args(["--arg-1", "cli_value"]), patch_env(ARG_1="env_value", ARG_2="env_value"):
+            args = Args.parse_args()
 
-        assert output_args.arg_int == 123
-        assert output_args.arg_str == "abc"
-        assert output_args.arg_float == 123.456
+        assert args.arg_1 == "cli_value"
+        assert args.arg_2 == "env_value"
+        assert args.arg_3 == "default_value"
 
     @staticmethod
     @pytest.mark.skip
@@ -99,20 +98,6 @@ class TestParseArgsUsingArgument:
             output_args = Args.parse_args()
 
         assert output_args.arg == "value"
-
-    @staticmethod
-    def test_not_provided_arguments_fallback_to_defaults() -> None:
-        class Args(RocketBase):
-            arg_int: int = Argument(default=123)
-            arg_str: str = Argument(default="abc")
-            arg_float: float = Argument(default=123.456)
-
-        with patch_cli_args([]):
-            output_args = Args.parse_args()
-
-        assert output_args.arg_int == 123
-        assert output_args.arg_str == "abc"
-        assert output_args.arg_float == 123.456
 
     # noinspection PyUnresolvedReferences
     @staticmethod
@@ -177,6 +162,20 @@ class TestParseArgsUsingArgument:
         assert args.arg_int == 1234
         assert args.arg_float == 12.34
         assert args.arg_str == "abcd"
+
+    @staticmethod
+    def test_args_have_appropriate_priorities_first_cli_then_env_then_default() -> None:
+        class Args(RocketBase):
+            arg_1: str = Argument(default="default_value")
+            arg_2: str = Argument(default="default_value")
+            arg_3: str = Argument(default="default_value")
+
+        with patch_cli_args(["--arg-1", "cli_value"]), patch_env(ARG_1="env_value", ARG_2="env_value"):
+            args = Args.parse_args()
+
+        assert args.arg_1 == "cli_value"
+        assert args.arg_2 == "env_value"
+        assert args.arg_3 == "default_value"
 
 
 class TestRepr:
