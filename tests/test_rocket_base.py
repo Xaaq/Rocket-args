@@ -123,8 +123,8 @@ class TestParseArgsUsingArgument:
         message = str(exception.value)
 
         for argument in [Args.arg_1, Args.arg_2]:
-            names = "/".join(argument.cli_names)
-            assert names in message
+            for name in argument.cli_names:
+                assert name in message
 
     # noinspection PyUnresolvedReferences
     @staticmethod

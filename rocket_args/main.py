@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Sequence, Type, TypeVar
 
 from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
-from rocket_args.utils import Argument, Field, create_help_message
+from rocket_args.utils import Argument, Field, MessageBuilder
 
 T = TypeVar("T", bound="RocketBase")
 
@@ -21,10 +21,10 @@ class RocketBase:
         fields_data = cls.__get_fields_data()
         parsed_args = cls.__parse_args(fields_data)
 
-        absent_args = [field.name for field in fields_data if field.name not in parsed_args]
+        absent_args = [field for field in fields_data if field.name not in parsed_args]
         if absent_args:
-            joined_args = ", ".join(absent_args)
-            raise SystemExit(f"Required args: {joined_args}")
+            help_message = MessageBuilder(absent_args).create_missing_arguments_message()
+            raise SystemExit(help_message)
 
         return cls(**parsed_args)
 
@@ -49,6 +49,6 @@ class RocketBase:
         joined_args = {key: value for args in parsed_args for key, value in args.items()}
 
         if "help" in joined_args:
-            help_message = create_help_message(fields_data)
+            help_message = MessageBuilder(fields_data).create_help_message()
             raise SystemExit(help_message)
         return joined_args

@@ -53,23 +53,33 @@ class Color(Enum):
     cyan = "\033[1;36m"
 
 
-def create_help_message(fields_data: Sequence[Field]) -> str:
-    program_name = Path(sys.argv[0]).name
+class MessageBuilder:
+    def __init__(self, fields_data: Sequence[Field]):
+        self.__fields_data = fields_data
 
-    padding = " " * 2
-    help_message = (
-        f"{program_name} usage:\n"
-        f"{padding}{Color.cyan.value}CLI NAMES\t{Color.purple.value}ENV NAME{Color.no_color.value}\tHELP\n"
-    )
+    def create_help_message(self) -> str:
+        program_name = Path(sys.argv[0]).name
+        arguments_help = self.__create_arguments_help()
+        return f"{program_name} usage:\n{arguments_help}"
 
-    for field in fields_data:
-        cli_names = " ".join(field.cli_names) if field.cli_names else ""
-        env_name = field.env_name if field.env_name else ""
-        arg_help = field.value.help if field.value.help else ""
-        help_message += (
-            f"{padding}{Color.cyan.value}{cli_names}\t"
-            f"{Color.purple.value}{env_name}\t"
-            f"{Color.no_color.value}{arg_help}\n"
+    def create_missing_arguments_message(self) -> str:
+        arguments_help = self.__create_arguments_help()
+        return f"Missing arguments:\n{arguments_help}"
+
+    def __create_arguments_help(self) -> str:
+        padding = " " * 2
+        help_message = (
+            f"{padding}{Color.cyan.value}CLI NAMES\t{Color.purple.value}ENV NAME{Color.no_color.value}\tHELP\n"
         )
 
-    return help_message
+        for field in self.__fields_data:
+            cli_names = " ".join(field.cli_names) if field.cli_names else ""
+            env_name = field.env_name if field.env_name else ""
+            arg_help = field.value.help if field.value.help else ""
+            help_message += (
+                f"{padding}{Color.cyan.value}{cli_names}\t"
+                f"{Color.purple.value}{env_name}\t"
+                f"{Color.no_color.value}{arg_help}\n"
+            )
+
+        return help_message
