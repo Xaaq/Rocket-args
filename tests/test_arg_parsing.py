@@ -1,9 +1,9 @@
 import pytest
 
 from rocket_args import Argument
-from rocket_args.arg_parsing import get_cmd_line_args
+from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
 from rocket_args.utils import Field
-from tests.utils import patch_cli_args
+from tests.utils import patch_cli_args, patch_env_args
 
 
 class TestGetCmdLineArgs:
@@ -24,9 +24,7 @@ class TestGetCmdLineArgs:
 
     @staticmethod
     def test_turned_off_arguments_arent_gathered_from_command_line() -> None:
-        fields_data = [
-            Field(name="name", type=str, value=Argument(cli_names=False)),
-        ]
+        fields_data = [Field(name="name", type=str, value=Argument(cli_names=False))]
         cli_args = ["--name", "abcd"]
 
         with patch_cli_args(cli_args), pytest.raises(SystemExit):
@@ -42,3 +40,27 @@ class TestGetCmdLineArgs:
 
         for arg in cli_args:
             assert arg in str(exception.value)
+
+
+class TestGetEnvArgs:
+    @staticmethod
+    def test_provided_arguments_are_correctly_parsed() -> None:
+        fields_data = [
+            Field(name="name_1", type=str, value=Argument(env_name=True)),
+            Field(name="name_2", type=int, value=Argument(env_name="ARG")),
+        ]
+
+        with patch_env_args(NAME_1="abcd", ARG="1234"):
+            parsed_args = get_env_args(fields_data)
+
+        expected_args = {"name_1": "abcd", "name_2": 1234}
+        assert parsed_args == expected_args
+
+    @staticmethod
+    def test_turned_off_arguments_arent_gathered_from_env() -> None:
+        fields_data = [Field(name="name", type=str, value=Argument(env_name=False))]
+
+        with patch_env_args(NAME="abcd"):
+            parsed_args = get_env_args(fields_data)
+
+        assert parsed_args == {}
