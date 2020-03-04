@@ -4,7 +4,7 @@ import pytest
 from _pytest.capture import CaptureFixture
 
 from rocket_args import Argument
-from rocket_args.main import RocketBase
+from rocket_args.rocket_base import RocketBase
 from tests.utils import patch_cli_args, patch_env_args
 
 
