@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Sequence, Type, TypeVar
 
 from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
-from rocket_args.utils import Argument, Field
+from rocket_args.utils import Argument, Field, create_help_message
 
 T = TypeVar("T", bound="RocketBase")
 
@@ -24,8 +24,7 @@ class RocketBase:
         absent_args = [field.name for field in fields_data if field.name not in parsed_args]
         if absent_args:
             joined_args = ", ".join(absent_args)
-            print(f"Required args: {joined_args}")
-            raise SystemExit(2)
+            raise SystemExit(f"Required args: {joined_args}")
 
         return cls(**parsed_args)
 
@@ -42,7 +41,14 @@ class RocketBase:
 
     @classmethod
     def __parse_args(cls, fields_data: Sequence[Field]) -> Dict[str, Any]:
+        help_field = Field(name="help", type=None, value=Argument(cli_names=["-h", "--help"], env_name=False))
+        fields_data = [help_field] + list(fields_data)
+
         defaults = {field.name: field.value.default for field in fields_data if field.value.default is not ...}
         parsed_args = [defaults, get_env_args(fields_data), get_cmd_line_args(fields_data)]
         joined_args = {key: value for args in parsed_args for key, value in args.items()}
+
+        if "help" in joined_args:
+            help_message = create_help_message(fields_data)
+            raise SystemExit(help_message)
         return joined_args

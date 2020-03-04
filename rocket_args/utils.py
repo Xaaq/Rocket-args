@@ -1,3 +1,6 @@
+import sys
+from enum import Enum
+from pathlib import Path
 from typing import Any, List, Optional, Sequence, Union
 
 
@@ -25,13 +28,48 @@ class Field:
         self.value = value
 
     @property
-    def cli_names(self) -> List[str]:
-        if isinstance(self.value.cli_names, list):
-            return self.value.cli_names
-        else:
+    def cli_names(self) -> Optional[List[str]]:
+        if isinstance(self.value.cli_names, Sequence):
+            return list(self.value.cli_names)
+        elif self.value.cli_names is True:
             formatted_name = self.name.replace("_", "-")
             return [f"--{formatted_name}"]
+        else:
+            return None
+
+    @property
+    def env_name(self) -> Optional[str]:
+        if isinstance(self.value.env_name, str):
+            return self.value.env_name
+        elif self.value.env_name is True:
+            return self.name.upper()
+        else:
+            return None
 
 
-class UnknownArguments(Exception):
-    pass
+class Color(Enum):
+    no_color = "\033[0m"
+    purple = "\033[1;35m"
+    cyan = "\033[1;36m"
+
+
+def create_help_message(fields_data: Sequence[Field]) -> str:
+    program_name = Path(sys.argv[0]).name
+
+    padding = " " * 2
+    help_message = (
+        f"{program_name} usage:\n"
+        f"{padding}{Color.cyan.value}CLI NAMES\t{Color.purple.value}ENV NAME{Color.no_color.value}\tHELP\n"
+    )
+
+    for field in fields_data:
+        cli_names = " ".join(field.cli_names) if field.cli_names else ""
+        env_name = field.env_name if field.env_name else ""
+        arg_help = field.value.help if field.value.help else ""
+        help_message += (
+            f"{padding}{Color.cyan.value}{cli_names}\t"
+            f"{Color.purple.value}{env_name}\t"
+            f"{Color.no_color.value}{arg_help}\n"
+        )
+
+    return help_message

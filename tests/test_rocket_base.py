@@ -42,6 +42,7 @@ class TestParseArgsWithoutUsingArgument:
     @staticmethod
     @pytest.mark.skip
     def test_not_provided_required_arguments_display_appropriate_message(capsys: CaptureFixture) -> None:
+        # TODO: delete capsys fixture
         class Args(RocketBase):
             arg_1: str
             arg_2: str
@@ -54,20 +55,18 @@ class TestParseArgsWithoutUsingArgument:
         assert "--arg-2" in output
 
     @staticmethod
-    @pytest.mark.skip
-    def test_help_message_contains_arguments_metadata(capsys: CaptureFixture) -> None:
+    @pytest.mark.parametrize("cli_args", [["-h"], ["--help"]], ids=["short help arg", "long help arg"])
+    def test_help_message_contains_arguments_metadata(cli_args: List[str]) -> None:
         class Args(RocketBase):
             arg_1: str
             arg_2: str
 
-        cli_args = ["--help"]
-
-        with patch_cli_args(cli_args), pytest.raises(SystemExit):
+        with patch_cli_args(cli_args), pytest.raises(SystemExit) as exception:
             Args.parse_args()
 
-        output = capsys.readouterr().out
-        assert "--arg-1" in output
-        assert "--arg-2" in output
+        message = str(exception.value)
+        for name in ["--arg-1", "ARG_1", "--arg-2", "ARG_2"]:
+            assert name in message
 
 
 class TestParseArgsUsingArgument:
@@ -96,7 +95,7 @@ class TestParseArgsUsingArgument:
         with patch_cli_args(cli_args), pytest.raises(SystemExit) as message:
             Args.parse_args()
 
-        occurrences = [arg in str(message) for arg in cli_args]
+        occurrences = [arg in str(message.value) for arg in cli_args]
         assert all(occurrences)
 
     @staticmethod
@@ -117,6 +116,7 @@ class TestParseArgsUsingArgument:
     @staticmethod
     @pytest.mark.skip
     def test_not_provided_required_arguments_display_appropriate_message(capsys: CaptureFixture) -> None:
+        # TODO: delete capsys fixture
         class Args(RocketBase):
             arg_1: str = Argument(cli_names=["-a1", "--arg-1", "----long-arg-1"])
             arg_2: str = Argument(cli_names=["-a2", "--arg-2", "----long-arg-2"])
@@ -132,23 +132,23 @@ class TestParseArgsUsingArgument:
 
     # noinspection PyUnresolvedReferences
     @staticmethod
-    @pytest.mark.skip
-    def test_help_message_contains_arguments_metadata(capsys: CaptureFixture) -> None:
+    @pytest.mark.parametrize("cli_args", [["-h"], ["--help"]], ids=["short help arg", "long help arg"])
+    def test_help_message_contains_arguments_metadata(cli_args: List[str]) -> None:
         class Args(RocketBase):
-            arg_1: str = Argument(cli_names=["-a1", "--arg-1"], help="First argument.")
-            arg_2: str = Argument(cli_names=["-a2", "--arg-2"], help="Second argument.")
+            arg_1: str = Argument(cli_names=["-a1", "--my-arg-1"], env_name="MY_ARG_1", help="First argument.")
+            arg_2: str = Argument(cli_names=["-a2", "--my-arg-2"], env_name="MY_ARG_2", help="Second argument.")
 
-        cli_args = ["--help"]
-
-        with patch_cli_args(cli_args), pytest.raises(SystemExit):
+        with patch_cli_args(cli_args), pytest.raises(SystemExit) as exception:
             Args.parse_args()
 
-        output = capsys.readouterr().out
+        message = str(exception.value)
 
         for argument in [Args.arg_1, Args.arg_2]:
             for name in argument.cli_names:
-                assert name in output
-            assert argument.help in output
+                assert name in message
+
+            assert argument.env_name in message
+            assert argument.help in message
 
     @staticmethod
     def test_provided_env_vars_return_appropriate_values() -> None:
