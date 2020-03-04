@@ -6,7 +6,6 @@ from rocket_args.utils import Field
 
 
 def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
-    cli_fields_data = [field for field in fields_data if field.cli_names if field.cli_names]
     cli_args = sys.argv[1:]
     known_args = {}
     unknown_args = []
@@ -14,8 +13,8 @@ def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
     while cli_args:
         cli_arg = cli_args.pop(0)
 
-        for field in cli_fields_data:
-            if cli_arg in field.cli_names:
+        for field in fields_data:
+            if field.cli_names and cli_arg in field.cli_names:
                 known_args[field.name] = field.type(cli_args.pop(0)) if cli_args else None
                 break
         else:
@@ -29,9 +28,6 @@ def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
 
 
 def get_env_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
-    env_fields_data = [field for field in fields_data if field.env_name]
-    env_values = [os.environ.get(field.env_name, None) for field in env_fields_data]
-    name_to_value = {
-        field.name: field.type(value) for field, value in zip(env_fields_data, env_values) if value is not None
-    }
+    field_with_value = [(field, os.environ.get(field.env_name, None)) for field in fields_data if field.env_name]
+    name_to_value = {field.name: field.type(value) for field, value in field_with_value if value is not None}
     return name_to_value
