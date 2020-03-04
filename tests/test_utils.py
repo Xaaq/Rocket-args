@@ -44,9 +44,10 @@ class TestField:
             assert field_data.env_name is None
 
 
-class TestMessageBuilder:
-    FieldsWithTokens = Tuple[List[Field], List[List[str]]]
+FieldsWithTokens = Tuple[List[Field], List[List[str]]]
 
+
+class TestMessageBuilder:
     @staticmethod
     @pytest.fixture
     def fields_with_expected_tokens() -> FieldsWithTokens:
