@@ -40,19 +40,17 @@ class TestParseArgsWithoutUsingArgument:
         assert args.arg_3 == "default_value"
 
     @staticmethod
-    @pytest.mark.skip
     def test_not_provided_required_arguments_display_appropriate_message(capsys: CaptureFixture) -> None:
-        # TODO: delete capsys fixture
         class Args(RocketBase):
             arg_1: str
             arg_2: str
 
-        with patch_cli_args([]), pytest.raises(SystemExit):
+        with patch_cli_args([]), pytest.raises(SystemExit) as exception:
             Args.parse_args()
 
-        output = capsys.readouterr().err
-        assert "--arg-1" in output
-        assert "--arg-2" in output
+        message = str(exception.value)
+        assert "--arg-1" in message
+        assert "--arg-2" in message
 
     @staticmethod
     @pytest.mark.parametrize("cli_args", [["-h"], ["--help"]], ids=["short help arg", "long help arg"])
@@ -114,21 +112,19 @@ class TestParseArgsUsingArgument:
 
     # noinspection PyUnresolvedReferences
     @staticmethod
-    @pytest.mark.skip
-    def test_not_provided_required_arguments_display_appropriate_message(capsys: CaptureFixture) -> None:
-        # TODO: delete capsys fixture
+    def test_not_provided_required_arguments_display_appropriate_message() -> None:
         class Args(RocketBase):
             arg_1: str = Argument(cli_names=["-a1", "--arg-1", "----long-arg-1"])
             arg_2: str = Argument(cli_names=["-a2", "--arg-2", "----long-arg-2"])
 
-        with patch_cli_args([]), pytest.raises(SystemExit):
+        with patch_cli_args([]), pytest.raises(SystemExit) as exception:
             Args.parse_args()
 
-        output = capsys.readouterr().err
+        message = str(exception.value)
 
         for argument in [Args.arg_1, Args.arg_2]:
             names = "/".join(argument.cli_names)
-            assert names in output
+            assert names in message
 
     # noinspection PyUnresolvedReferences
     @staticmethod
