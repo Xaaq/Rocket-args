@@ -2,7 +2,7 @@ import os
 import sys
 from typing import Any, Dict, Sequence
 
-from rocket_args.utils import Field
+from rocket_args.utils import Color, Field
 
 
 def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
@@ -22,7 +22,7 @@ def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
 
     if unknown_args:
         unknown_args_str = " ".join(unknown_args)
-        raise SystemExit(f"Unknown arguments: {unknown_args_str}")
+        raise SystemExit(f"Unknown arguments: {Color.cli.value}{unknown_args_str}{Color.neutral.value}")
 
     return known_args
 
