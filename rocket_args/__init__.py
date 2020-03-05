@@ -1,4 +1,4 @@
-from rocket_args.main import RocketBase
+from rocket_args.rocket_base import RocketBase
 from rocket_args.utils import Argument
 
 __author__ = "Amadeusz Hercog"
