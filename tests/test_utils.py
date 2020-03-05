@@ -16,7 +16,7 @@ class TestField:
             assert field_data.cli_names == expected_cli_names
 
         @staticmethod
-        def test_generates_name_based_on_field_name() -> None:
+        def test_generates_name_based_on_field() -> None:
             field_data = Field(name="field_name", type=str, value=Argument(cli_names=True))
             assert field_data.cli_names == ["--field-name"]
 
@@ -34,7 +34,7 @@ class TestField:
             assert field_data.env_name == expected_name
 
         @staticmethod
-        def test_generates_name_based_on_field_name() -> None:
+        def test_generates_name_based_on_field() -> None:
             field_data = Field(name="field_name", type=str, value=Argument(env_name=True))
             assert field_data.env_name == "FIELD_NAME"
 

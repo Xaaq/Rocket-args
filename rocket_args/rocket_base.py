@@ -39,16 +39,16 @@ class RocketBase:
         ]
         return fields
 
-    @classmethod
-    def __parse_args(cls, fields_data: Sequence[Field]) -> Dict[str, Any]:
+    @staticmethod
+    def __parse_args(fields: Sequence[Field]) -> Dict[str, Any]:
         help_field = Field(name="help", type=None, value=Argument(cli_names=["-h", "--help"], env_name=False))
-        fields_data = [help_field] + list(fields_data)
+        fields_with_help = [help_field] + list(fields)
 
-        defaults = {field.name: field.value.default for field in fields_data if field.value.default is not ...}
-        parsed_args = [defaults, get_env_args(fields_data), get_cmd_line_args(fields_data)]
+        defaults = {field.name: field.value.default for field in fields_with_help if field.value.default is not ...}
+        parsed_args = [defaults, get_env_args(fields_with_help), get_cmd_line_args(fields_with_help)]
         joined_args = {key: value for args in parsed_args for key, value in args.items()}
 
         if "help" in joined_args:
-            help_message = MessageBuilder(fields_data).create_help_message()
+            help_message = MessageBuilder(fields_with_help).create_help_message()
             raise SystemExit(help_message)
         return joined_args
