@@ -3,7 +3,8 @@ from typing import Any
 import pytest
 
 from rocket_args import Argument
-from rocket_args.arg_parsing import cast_args_to_fields_types, get_cmd_line_args, get_env_args
+from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
+from rocket_args.type_casting import cast_args_to_fields_types
 from rocket_args.utils import Field
 from tests.utils import patch_cli_args, patch_env_args
 
