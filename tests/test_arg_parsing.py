@@ -71,25 +71,13 @@ class TestGetEnvArgs:
 # TODO: extract Field creation to factory?
 class TestCastValues:
     @staticmethod
-    @pytest.mark.parametrize(
-        "type_hint, args, expected",
-        [
-            [str, "abcd", "abcd"],
-            [int, "1234", 1234],
-            [float, "12.34", 12.34],
-            [List[int], "12,34,56,78", [12, 34, 56, 78]],
-            [Tuple[int], "12,34,56,78", (12, 34, 56, 78)],
-            [Set[int], "12,34,56,78", {12, 34, 56, 78}],
-        ],
-        ids=["str", "int", "float", "list of ints", "tuple of ints", "set of ints"],
-    )
-    def test_field_type_is_correctly_casted(type_hint: Any, args: str, expected: Any) -> None:
+    def test_field_type_is_correctly_casted(type_hint: Any, raw_arg: str, parsed_arg: Any) -> None:
         fields = [Field(name="name", type=type_hint, value=Argument())]
-        args = {"name": args}
+        args = {"name": raw_arg}
 
         actual = cast_values(fields, args)
 
-        expected = {"name": expected}
+        expected = {"name": parsed_arg}
         assert actual == expected
 
     @staticmethod
