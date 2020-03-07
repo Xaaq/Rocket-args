@@ -1,7 +1,9 @@
+from typing import Any, List, Set, Tuple
+
 import pytest
 
 from rocket_args import Argument
-from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
+from rocket_args.arg_parsing import cast_values, get_cmd_line_args, get_env_args
 from rocket_args.utils import Field
 from tests.utils import patch_cli_args, patch_env_args
 
@@ -64,3 +66,29 @@ class TestGetEnvArgs:
             parsed_args = get_env_args(fields_data)
 
         assert parsed_args == {}
+
+
+# TODO: extract Field creation to factory?
+class TestCastValues:
+    # noinspection PyShadowingBuiltins
+    @staticmethod
+    @pytest.mark.parametrize(
+        "type_hint, args, expected",
+        [
+            [str, "abcd", "abcd"],
+            [int, "1234", 1234],
+            [float, "12.34", 12.34],
+            [List[int], "12,34,56,78", [12, 34, 56, 78]],
+            [Tuple[int], "12,34,56,78", (12, 34, 56, 78)],
+            [Set[int], "12,34,56,78", {12, 34, 56, 78}],
+        ],
+        ids=["str", "int", "float", "list of ints", "tuple of ints", "set of ints"],
+    )
+    def test_field_type_is_correctly_casted(type_hint: Any, args: str, expected: Any) -> None:
+        fields = [Field(name="name", type=type_hint, value=Argument())]
+        args = {"name": args}
+
+        actual = cast_values(fields, args)
+
+        expected = {"name": expected}
+        assert actual == expected

@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Any, Dict, Sequence
+from typing import Any, Dict, Sequence, _GenericAlias
 
 from rocket_args.utils import Color, Field
 
@@ -33,7 +33,24 @@ def get_env_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
     return name_to_value
 
 
-def cast_types(fields_data: Sequence[Field], args: Dict[str, str]) -> Dict[str, Any]:
-    name_to_type = {field.name: field.type for field in fields_data}
-    name_to_value = {name: name_to_type[name](value) if name in name_to_type else value for name, value in args.items()}
+def cast_values(fields_data: Sequence[Field], args: Dict[str, str]) -> Dict[str, Any]:
+    def cast_value(field_type: Any, value: Any) -> Any:
+        if isinstance(field_type, _GenericAlias):
+            real_type = field_type.__origin__
+
+            if real_type in (list, tuple, set):
+                subtype = field_type.__args__[0]
+                divided_arg = [subtype(arg) for arg in value.split(",")]
+                return real_type(divided_arg)
+            else:
+                raise ValueError(f"Type {field_type} is not supported")
+        else:
+            return field_type(value)
+
+    field_name_to_type = {field.name: field.type for field in fields_data}
+    name_to_type_to_value = [(name, field_name_to_type.get(name, None), value) for name, value in args.items()]
+    name_to_value = {
+        name: value if type_hint is None else cast_value(type_hint, value)
+        for name, type_hint, value in name_to_type_to_value
+    }
     return name_to_value
