@@ -1,6 +1,7 @@
 from typing import Any, List, Set, Tuple
 
 import pytest
+from _pytest.fixtures import SubRequest
 
 
 @pytest.fixture(
@@ -14,7 +15,7 @@ import pytest
     ],
     ids=["str", "int", "float", "list of ints", "tuple of ints", "set of ints"],
 )
-def type_hint_to_raw_arg_to_parsed_arg(request) -> Tuple[Any, str, Any]:
+def type_hint_to_raw_arg_to_parsed_arg(request: SubRequest) -> Tuple[Any, str, Any]:
     return request.param
 
 

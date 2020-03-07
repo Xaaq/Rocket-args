@@ -1,6 +1,6 @@
 import os
 import sys
-from typing import Any, Dict, Sequence, _GenericAlias
+from typing import Any, Callable, Dict, Sequence, TypeVar, _GenericAlias
 
 from rocket_args.utils import Color, Field
 
@@ -33,8 +33,11 @@ def get_env_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
     return name_to_value
 
 
+T = TypeVar("T", bound=Callable)
+
+
 def cast_values(fields_data: Sequence[Field], args: Dict[str, str]) -> Dict[str, Any]:
-    def cast_value(field_type: Any, value: Any) -> Any:
+    def cast_value(field_type: T, value: Any) -> T:
         if isinstance(field_type, _GenericAlias):
             real_type = field_type.__origin__
 
