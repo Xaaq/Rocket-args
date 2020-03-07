@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Sequence, Set, Tuple, TypeVar
 from rocket_args.utils import Color, Field
 
 
-def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
+def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, str]:
     cli_args = sys.argv[1:]
     known_args = {}
     unknown_args = []
@@ -27,7 +27,7 @@ def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
     return known_args
 
 
-def get_env_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
+def get_env_args(fields_data: Sequence[Field]) -> Dict[str, str]:
     field_with_value = [(field, os.environ.get(field.env_name, None)) for field in fields_data if field.env_name]
     name_to_value = {field.name: value for field, value in field_with_value if value is not None}
     return name_to_value
@@ -36,8 +36,8 @@ def get_env_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
 T = TypeVar("T", bound=Any)
 
 
-def cast_values(fields_data: Sequence[Field], args: Dict[str, str]) -> Dict[str, Any]:
-    def cast_value(target_type: T, value: str) -> T:
+def cast_args_to_fields_types(args: Dict[str, str], fields_data: Sequence[Field]) -> Dict[str, Any]:
+    def cast_value_to_type(value: str, target_type: T) -> T:
         type_of_field_type = type(target_type)
 
         if type_of_field_type in [type(List), type(Tuple), type(Set)]:
@@ -51,7 +51,7 @@ def cast_values(fields_data: Sequence[Field], args: Dict[str, str]) -> Dict[str,
     field_name_to_type = {field.name: field.type for field in fields_data}
     name_to_type_to_value = [(name, field_name_to_type.get(name, None), value) for name, value in args.items()]
     name_to_value = {
-        name: value if type_hint is None else cast_value(type_hint, value)
+        name: value if type_hint is None else cast_value_to_type(value, type_hint)
         for name, type_hint, value in name_to_type_to_value
     }
     return name_to_value

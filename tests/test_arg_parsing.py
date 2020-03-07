@@ -3,7 +3,7 @@ from typing import Any
 import pytest
 
 from rocket_args import Argument
-from rocket_args.arg_parsing import cast_values, get_cmd_line_args, get_env_args
+from rocket_args.arg_parsing import cast_args_to_fields_types, get_cmd_line_args, get_env_args
 from rocket_args.utils import Field
 from tests.utils import patch_cli_args, patch_env_args
 
@@ -68,14 +68,13 @@ class TestGetEnvArgs:
         assert parsed_args == {}
 
 
-# TODO: extract Field creation to factory?
-class TestCastValues:
+class TestCastArgsToFieldTypes:
     @staticmethod
     def test_field_type_is_correctly_casted(type_hint: Any, raw_arg: str, parsed_arg: Any) -> None:
         fields = [Field(name="name", type=type_hint, value=Argument())]
         args = {"name": raw_arg}
 
-        actual = cast_values(fields, args)
+        actual = cast_args_to_fields_types(args, fields)
 
         expected = {"name": parsed_arg}
         assert actual == expected
@@ -85,6 +84,6 @@ class TestCastValues:
         fields = []
         expected = {"name_1": "abcd", "name_2": 1234, "name_3": 12.34}
 
-        actual = cast_values(fields, expected)
+        actual = cast_args_to_fields_types(expected, fields)
 
         assert actual == expected
