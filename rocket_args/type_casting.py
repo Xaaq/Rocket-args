@@ -1,3 +1,4 @@
+import sys
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple, TypeVar
 
 from rocket_args.utils import Field
@@ -17,24 +18,23 @@ T = TypeVar("T", bound=Any)
 
 
 def __cast_value_to_type(value: str, target_type: T) -> T:
-    type_of_field_type = type(target_type)
+    raw_type, subtypes = __get_raw_type_data(target_type)
+    parsed_value = [subtypes[0](arg) for arg in value.split(",")] if raw_type in [list, set] else value
+    return raw_type(parsed_value)
 
-    if type_of_field_type in [type(List), type(Tuple), type(Set)]:
-        real_type = __type_hint_to_callable_type(target_type)
-        subtype = target_type.__args__[0]
-        divided_arg = [subtype(arg) for arg in value.split(",")]
-        return real_type(divided_arg)
+
+def __get_raw_type_data(type_hint: Any) -> Tuple[Any, List[Any]]:
+    if type(type_hint) in [type(List), type(Set)]:
+        if sys.version_info.minor >= 7:
+            raw_type = type_hint.__origin__
+        else:
+            if issubclass(type_hint, list):
+                raw_type = list
+            elif issubclass(type_hint, set):
+                raw_type = set
+            else:
+                raise ValueError(f"Unsupported type: {type_hint}")
+
+        return raw_type, type_hint.__args__
     else:
-        return target_type(value)
-
-
-def __type_hint_to_callable_type(type_hint: Any) -> Any:
-    return (
-        list
-        if issubclass(type_hint, list)
-        else tuple
-        if issubclass(type_hint, tuple)
-        else set
-        if issubclass(type_hint, set)
-        else type_hint.__origin__
-    )
+        return type_hint, []

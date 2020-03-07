@@ -10,10 +10,9 @@ from _pytest.fixtures import SubRequest
         (int, "1234", 1234),
         (float, "12.34", 12.34),
         (List[int], "12,34,56,78", [12, 34, 56, 78]),
-        (Tuple[int], "12,34,56,78", (12, 34, 56, 78)),
         (Set[int], "12,34,56,78", {12, 34, 56, 78}),
     ],
-    ids=["str", "int", "float", "list of ints", "tuple of ints", "set of ints"],
+    ids=["str", "int", "float", "list of ints", "set of ints"],
 )
 def type_hint_to_raw_arg_to_parsed_arg(request: SubRequest) -> Tuple[Any, str, Any]:
     return request.param
