@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List, Set, Tuple
 
 import pytest
 from _pytest.capture import CaptureFixture
@@ -187,6 +187,30 @@ class TestParseArgsUsingArgument:
         assert args.arg_1 == "cli_value"
         assert args.arg_2 == "env_value"
         assert args.arg_3 == "default_value"
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "type_hint, str_arg, expected",
+        [
+            [str, "abcd", "abcd"],
+            [int, "1234", 1234],
+            [float, "12.34", 12.34],
+            [List[int], "12,34,56,78", [12, 34, 56, 78]],
+            [Tuple[int], "12,34,56,78", (12, 34, 56, 78)],
+            [Set[int], "12,34,56,78", {12, 34, 56, 78}],
+        ],
+        ids=["str", "int", "float", "list of ints", "tuple of ints", "set of ints"],
+    )
+    def test_type_is_correctly_parsed(type_hint: Any, str_arg: str, expected: Any) -> None:
+        class Args(RocketBase):
+            name: type_hint
+
+        cli_args = ["--name", str_arg]
+
+        with patch_cli_args(cli_args):
+            args = Args.parse_args()
+
+        assert args.name == expected
 
 
 class TestRepr:
