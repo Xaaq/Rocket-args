@@ -51,7 +51,7 @@ def cast_args_to_fields_types(args: Mapping[str, Optional[str]], fields_data: Se
     field_name_to_type = {field.name: field.type for field in fields_data}
     name_to_type_to_value = [(name, field_name_to_type.get(name, None), value) for name, value in args.items()]
     name_to_value = {
-        name: value if type_hint is None or value is None else cast_value_to_type(value, type_hint)
+        name: value if (type_hint is None or value is None) else cast_value_to_type(value, type_hint)
         for name, type_hint, value in name_to_type_to_value
     }
     return name_to_value
