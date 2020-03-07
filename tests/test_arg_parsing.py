@@ -70,7 +70,6 @@ class TestGetEnvArgs:
 
 # TODO: extract Field creation to factory?
 class TestCastValues:
-    # noinspection PyShadowingBuiltins
     @staticmethod
     @pytest.mark.parametrize(
         "type_hint, args, expected",
@@ -91,4 +90,13 @@ class TestCastValues:
         actual = cast_values(fields, args)
 
         expected = {"name": expected}
+        assert actual == expected
+
+    @staticmethod
+    def test_argument_not_existing_in_fields_is_let_through() -> None:
+        fields = []
+        expected = {"name_1": "abcd", "name_2": 1234, "name_3": 12.34}
+
+        actual = cast_values(fields, expected)
+
         assert actual == expected
