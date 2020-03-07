@@ -19,7 +19,7 @@ class TestGetCmdLineArgs:
         with patch_cli_args(cli_args):
             parsed_args = get_cmd_line_args(fields_data)
 
-        expected_args = {"name_1": "abcd", "name_2": 1234, "name_3": 12.34}
+        expected_args = {"name_1": "abcd", "name_2": "1234", "name_3": "12.34"}
         assert parsed_args == expected_args
 
     @staticmethod
@@ -53,7 +53,7 @@ class TestGetEnvArgs:
         with patch_env_args(NAME_1="abcd", ARG="1234"):
             parsed_args = get_env_args(fields_data)
 
-        expected_args = {"name_1": "abcd", "name_2": 1234}
+        expected_args = {"name_1": "abcd", "name_2": "1234"}
         assert parsed_args == expected_args
 
     @staticmethod
