@@ -17,14 +17,14 @@ def cast_args_to_fields_types(args: Mapping[str, Optional[str]], fields_data: Se
 T = TypeVar("T", bound=Any)
 
 
-def __cast_value_to_type(value: str, target_type: T) -> T:
-    if type(target_type) in [type(List), type(Set)]:
-        raw_type = __type_hint_to_raw_type(target_type)
-        subtype = target_type.__args__[0]
+def __cast_value_to_type(value: str, type_hint: T) -> T:
+    if type(type_hint) in [type(List), type(Set)]:
+        raw_type = __type_hint_to_raw_type(type_hint)
+        subtype = type_hint.__args__[0]
         parsed_value = [subtype(arg) for arg in value.split(",")]
         return raw_type(parsed_value)
     else:
-        return target_type(value)
+        return type_hint(value)
 
 
 def __type_hint_to_raw_type(type_hint: Any) -> Any:
@@ -32,6 +32,7 @@ def __type_hint_to_raw_type(type_hint: Any) -> Any:
         raw_type = type_hint.__origin__
     else:
         raw_type = list if issubclass(type_hint, list) else set if issubclass(type_hint, set) else None
+
         if raw_type is None:
             raise ValueError(f"Unsupported type: {type_hint}")
 
