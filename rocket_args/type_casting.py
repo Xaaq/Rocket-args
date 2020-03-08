@@ -6,19 +6,18 @@ from rocket_args.utils import Field
 
 def cast_args_to_fields_types(args: Mapping[str, Optional[str]], fields_data: Sequence[Field]) -> Dict[str, Any]:
     field_name_to_type = {field.name: field.type for field in fields_data}
-    name_to_type_to_value = [(name, field_name_to_type.get(name, None), value) for name, value in args.items()]
-    name_to_value = {
-        name: value if (type_hint is None or value is None) else __cast_value_to_type(value, type_hint)
-        for name, type_hint, value in name_to_type_to_value
-    }
+    name_to_type_to_value = [(name, value, field_name_to_type.get(name, None)) for name, value in args.items()]
+    name_to_value = {name: __cast_value_to_type(value, type_hint) for name, value, type_hint in name_to_type_to_value}
     return name_to_value
 
 
 T = TypeVar("T", bound=Any)
 
 
-def __cast_value_to_type(value: str, type_hint: T) -> T:
-    if type(type_hint) in [type(List), type(Set)]:
+def __cast_value_to_type(value: Optional[str], type_hint: T) -> Optional[T]:
+    if value is None or type_hint is None:
+        return value
+    elif type(type_hint) in [type(List), type(Set)]:
         raw_type = __type_hint_to_raw_type(type_hint)
         subtype = type_hint.__args__[0]
         parsed_value = [subtype(arg) for arg in value.split(",")]

@@ -83,7 +83,7 @@ class TestCastArgsToFieldTypes:
     @staticmethod
     def test_argument_not_existing_in_fields_is_let_through() -> None:
         fields = []
-        expected = {"name_1": "abcd", "name_2": 1234, "name_3": 12.34}
+        expected = {"name_1": "abcd", "name_2": 1234, "name_3": 12.34, "name_4": None}
 
         actual = cast_args_to_fields_types(expected, fields)
 
