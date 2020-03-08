@@ -6,7 +6,7 @@ from rocket_args import Argument
 from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
 from rocket_args.type_casting import cast_args_to_fields_types
 from rocket_args.utils import Field
-from tests.utils import patch_cli_args, patch_env_args
+from tests.utils import FieldFactory, patch_cli_args, patch_env_args
 
 
 class TestGetCmdLineArgs:
@@ -27,7 +27,7 @@ class TestGetCmdLineArgs:
 
     @staticmethod
     def test_turned_off_arguments_arent_gathered_from_command_line() -> None:
-        fields_data = [Field(name="name", type=str, value=Argument(cli_names=False))]
+        fields_data = [FieldFactory(name="name", value=Argument(cli_names=False))]
         cli_args = ["--name", "abcd"]
 
         with patch_cli_args(cli_args), pytest.raises(SystemExit):
@@ -61,7 +61,7 @@ class TestGetEnvArgs:
 
     @staticmethod
     def test_turned_off_arguments_arent_gathered_from_env() -> None:
-        fields_data = [Field(name="name", type=str, value=Argument(env_name=False))]
+        fields_data = [FieldFactory(name="name", value=Argument(env_name=False))]
 
         with patch_env_args(NAME="abcd"):
             parsed_args = get_env_args(fields_data)
@@ -72,12 +72,12 @@ class TestGetEnvArgs:
 class TestCastArgsToFieldTypes:
     @staticmethod
     def test_field_type_is_correctly_casted(type_hint: Any, raw_arg: str, parsed_arg: Any) -> None:
-        fields = [Field(name="name", type=type_hint, value=Argument())]
-        args = {"name": raw_arg}
+        field = FieldFactory(type=type_hint)
+        args = {field.name: raw_arg}
 
-        actual = cast_args_to_fields_types(args, fields)
+        actual = cast_args_to_fields_types(args, [field])
 
-        expected = {"name": parsed_arg}
+        expected = {field.name: parsed_arg}
         assert actual == expected
 
     @staticmethod
