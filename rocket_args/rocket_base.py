@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Sequence, Type, TypeVar
 
 from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
+from rocket_args.type_casting import cast_args_to_fields_types
 from rocket_args.utils import Argument, Field, MessageBuilder
 
 T = TypeVar("T", bound="RocketBase")
@@ -45,7 +46,10 @@ class RocketBase:
         fields_with_help = [help_field] + list(fields)
 
         defaults = {field.name: field.value.default for field in fields_with_help if field.value.default is not ...}
-        parsed_args = [defaults, get_env_args(fields_with_help), get_cmd_line_args(fields_with_help)]
+        env_args = cast_args_to_fields_types(get_env_args(fields_with_help), fields)
+        cli_args = cast_args_to_fields_types(get_cmd_line_args(fields_with_help), fields)
+
+        parsed_args = [defaults, env_args, cli_args]
         joined_args = {key: value for args in parsed_args for key, value in args.items()}
 
         if "help" in joined_args:

@@ -1,7 +1,10 @@
+from typing import Any
+
 import pytest
 
 from rocket_args import Argument
 from rocket_args.arg_parsing import get_cmd_line_args, get_env_args
+from rocket_args.type_casting import cast_args_to_fields_types
 from rocket_args.utils import Field
 from tests.utils import patch_cli_args, patch_env_args
 
@@ -19,7 +22,7 @@ class TestGetCmdLineArgs:
         with patch_cli_args(cli_args):
             parsed_args = get_cmd_line_args(fields_data)
 
-        expected_args = {"name_1": "abcd", "name_2": 1234, "name_3": 12.34}
+        expected_args = {"name_1": "abcd", "name_2": "1234", "name_3": "12.34"}
         assert parsed_args == expected_args
 
     @staticmethod
@@ -53,7 +56,7 @@ class TestGetEnvArgs:
         with patch_env_args(NAME_1="abcd", ARG="1234"):
             parsed_args = get_env_args(fields_data)
 
-        expected_args = {"name_1": "abcd", "name_2": 1234}
+        expected_args = {"name_1": "abcd", "name_2": "1234"}
         assert parsed_args == expected_args
 
     @staticmethod
@@ -64,3 +67,24 @@ class TestGetEnvArgs:
             parsed_args = get_env_args(fields_data)
 
         assert parsed_args == {}
+
+
+class TestCastArgsToFieldTypes:
+    @staticmethod
+    def test_field_type_is_correctly_casted(type_hint: Any, raw_arg: str, parsed_arg: Any) -> None:
+        fields = [Field(name="name", type=type_hint, value=Argument())]
+        args = {"name": raw_arg}
+
+        actual = cast_args_to_fields_types(args, fields)
+
+        expected = {"name": parsed_arg}
+        assert actual == expected
+
+    @staticmethod
+    def test_argument_not_existing_in_fields_is_let_through() -> None:
+        fields = []
+        expected = {"name_1": "abcd", "name_2": 1234, "name_3": 12.34}
+
+        actual = cast_args_to_fields_types(expected, fields)
+
+        assert actual == expected

@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 
 import pytest
 from _pytest.capture import CaptureFixture
@@ -187,6 +187,18 @@ class TestParseArgsUsingArgument:
         assert args.arg_1 == "cli_value"
         assert args.arg_2 == "env_value"
         assert args.arg_3 == "default_value"
+
+    @staticmethod
+    def test_type_is_correctly_parsed(type_hint: Any, raw_arg: str, parsed_arg: Any) -> None:
+        class Args(RocketBase):
+            name: type_hint
+
+        cli_args = ["--name", raw_arg]
+
+        with patch_cli_args(cli_args):
+            args = Args.parse_args()
+
+        assert args.name == parsed_arg
 
 
 class TestRepr:

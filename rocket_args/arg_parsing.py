@@ -1,11 +1,11 @@
 import os
 import sys
-from typing import Any, Dict, Sequence
+from typing import Mapping, Optional, Sequence
 
 from rocket_args.utils import Color, Field
 
 
-def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
+def get_cmd_line_args(fields_data: Sequence[Field]) -> Mapping[str, Optional[str]]:
     cli_args = sys.argv[1:]
     known_args = {}
     unknown_args = []
@@ -15,7 +15,7 @@ def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
 
         for field in fields_data:
             if field.cli_names and cli_arg in field.cli_names:
-                known_args[field.name] = field.type(cli_args.pop(0)) if cli_args else None
+                known_args[field.name] = cli_args.pop(0) if cli_args else None
                 break
         else:
             unknown_args.append(cli_arg)
@@ -27,7 +27,7 @@ def get_cmd_line_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
     return known_args
 
 
-def get_env_args(fields_data: Sequence[Field]) -> Dict[str, Any]:
+def get_env_args(fields_data: Sequence[Field]) -> Mapping[str, str]:
     field_with_value = [(field, os.environ.get(field.env_name, None)) for field in fields_data if field.env_name]
-    name_to_value = {field.name: field.type(value) for field, value in field_with_value if value is not None}
+    name_to_value = {field.name: value for field, value in field_with_value if value is not None}
     return name_to_value
