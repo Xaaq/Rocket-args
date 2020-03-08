@@ -4,6 +4,7 @@ import pytest
 
 from rocket_args import Argument
 from rocket_args.utils import Field, MessageBuilder
+from tests.utils import FieldFactory
 
 
 class TestField:
