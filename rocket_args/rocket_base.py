@@ -29,15 +29,13 @@ class RocketBase:
 
         return cls(**parsed_args)
 
+    # noinspection PyShadowingBuiltins
     @classmethod
     def __get_fields_data(cls) -> List[Field]:
         field_names_with_types = cls.__annotations__
         defaults = [cls.__dict__.get(name, ...) for name in field_names_with_types.keys()]
         args = [Argument(default=default) if not isinstance(default, Argument) else default for default in defaults]
-        fields = [
-            Field(arg_name, arg_type, arg_data)
-            for (arg_name, arg_type), arg_data in zip(field_names_with_types.items(), args)
-        ]
+        fields = [Field(name, type, data) for (name, type), data in zip(field_names_with_types.items(), args)]
         return fields
 
     @staticmethod

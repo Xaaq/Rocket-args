@@ -4,6 +4,7 @@ import pytest
 
 from rocket_args import Argument
 from rocket_args.utils import Field, MessageBuilder
+from tests.utils import FieldFactory
 
 
 class TestField:
@@ -11,36 +12,36 @@ class TestField:
         @staticmethod
         def test_returns_custom_names() -> None:
             expected_cli_names = ["-a", "--arg"]
-            field_data = Field(name="field_name", type=str, value=Argument(cli_names=expected_cli_names))
+            field_data = FieldFactory(value=Argument(cli_names=expected_cli_names))
 
             assert field_data.cli_names == expected_cli_names
 
         @staticmethod
         def test_generates_name_based_on_field() -> None:
-            field_data = Field(name="field_name", type=str, value=Argument(cli_names=True))
+            field_data = FieldFactory(name="field_name", value=Argument(cli_names=True))
             assert field_data.cli_names == ["--field-name"]
 
         @staticmethod
         def test_returns_none_if_cli_names_are_turned_off() -> None:
-            field_data = Field(name="field_name", type=str, value=Argument(cli_names=False))
+            field_data = FieldFactory(value=Argument(cli_names=False))
             assert field_data.cli_names is None
 
     class TestEnvName:
         @staticmethod
         def test_returns_custom_name() -> None:
             expected_name = "ARG"
-            field_data = Field(name="field_name", type=str, value=Argument(env_name=expected_name))
+            field_data = FieldFactory(value=Argument(env_name=expected_name))
 
             assert field_data.env_name == expected_name
 
         @staticmethod
         def test_generates_name_based_on_field() -> None:
-            field_data = Field(name="field_name", type=str, value=Argument(env_name=True))
+            field_data = FieldFactory(name="field_name", value=Argument(env_name=True))
             assert field_data.env_name == "FIELD_NAME"
 
         @staticmethod
         def test_returns_none_if_env_name_is_turned_off() -> None:
-            field_data = Field(name="field_name", type=str, value=Argument(env_name=False))
+            field_data = FieldFactory(value=Argument(env_name=False))
             assert field_data.env_name is None
 
 
@@ -52,10 +53,10 @@ class TestMessageBuilder:
     @pytest.fixture
     def fields_with_expected_tokens() -> FieldsWithTokens:
         fields = [
-            Field(name="name_1", type=str, value=Argument(cli_names=True, env_name=False, help="help 1")),
-            Field(name="name_2", type=str, value=Argument(cli_names=False, env_name=True, help="help 2")),
-            Field(name="name_3", type=str, value=Argument(cli_names=True, env_name=True, help="help 3")),
-            Field(name="name_4", type=str, value=Argument(cli_names=["-a", "--arg"], env_name="ARG", help="help 4")),
+            FieldFactory(name="name_1", value=Argument(cli_names=True, env_name=False, help="help 1")),
+            FieldFactory(name="name_2", value=Argument(cli_names=False, env_name=True, help="help 2")),
+            FieldFactory(name="name_3", value=Argument(cli_names=True, env_name=True, help="help 3")),
+            FieldFactory(name="name_4", value=Argument(cli_names=["-a", "--arg"], env_name="ARG", help="help 4")),
         ]
         expected_tokens = [
             ["--name-1", "help 1"],
