@@ -1,5 +1,5 @@
 import sys
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, Tuple, TypeVar
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, TypeVar
 
 from rocket_args.utils import Field
 
@@ -18,23 +18,21 @@ T = TypeVar("T", bound=Any)
 
 
 def __cast_value_to_type(value: str, target_type: T) -> T:
-    raw_type, subtypes = __get_raw_type_data(target_type)
-    parsed_value = [subtypes[0](arg) for arg in value.split(",")] if raw_type in [list, set] else value
-    return raw_type(parsed_value)
-
-
-def __get_raw_type_data(type_hint: Any) -> Tuple[Any, List[Any]]:
-    if type(type_hint) in [type(List), type(Set)]:
-        if sys.version_info.minor >= 7:
-            raw_type = type_hint.__origin__
-        else:
-            if issubclass(type_hint, list):
-                raw_type = list
-            elif issubclass(type_hint, set):
-                raw_type = set
-            else:
-                raise ValueError(f"Unsupported type: {type_hint}")
-
-        return raw_type, type_hint.__args__
+    if type(target_type) in [type(List), type(Set)]:
+        raw_type = __type_hint_to_raw_type(target_type)
+        subtype = target_type.__args__[0]
+        parsed_value = [subtype(arg) for arg in value.split(",")]
+        return raw_type(parsed_value)
     else:
-        return type_hint, []
+        return target_type(value)
+
+
+def __type_hint_to_raw_type(type_hint: Any) -> Any:
+    if sys.version_info.minor >= 7:
+        raw_type = type_hint.__origin__
+    else:
+        raw_type = list if issubclass(type_hint, list) else set if issubclass(type_hint, set) else None
+        if raw_type is None:
+            raise ValueError(f"Unsupported type: {type_hint}")
+
+    return raw_type
