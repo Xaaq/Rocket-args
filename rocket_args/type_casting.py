@@ -4,10 +4,11 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Set, TypeVar
 from rocket_args.utils import Field
 
 
+# noinspection PyShadowingBuiltins
 def cast_args_to_fields_types(args: Mapping[str, Optional[str]], fields_data: Sequence[Field]) -> Dict[str, Any]:
-    field_name_to_type = {field.name: field.type for field in fields_data}
-    name_to_type_to_value = [(name, value, field_name_to_type.get(name, None)) for name, value in args.items()]
-    name_to_value = {name: __cast_value_to_type(value, type_hint) for name, value, type_hint in name_to_type_to_value}
+    name_to_type = {field.name: field.type for field in fields_data}
+    name_to_value_to_type = [(name, value, name_to_type.get(name, None)) for name, value in args.items()]
+    name_to_value = {name: __cast_value_to_type(value, type) for name, value, type in name_to_value_to_type}
     return name_to_value
 
 
