@@ -13,9 +13,9 @@ clean: ## remove all build and test artifacts along with python cache
 	@rm -rf htmlcov/
 	@rm -rf .tox/
 	@rm -rf .mypy_cache/
-	@find . -name '.pytest_cache' -exec rm -fr {} +
+	@find . -name '.pytest_cache' -exec rm -rf {} +
 	@find . -name '__pycache__' -exec rm -rf {} +
-	@find . -name '*.egg-info' -exec rm -fr {} +
+	@find . -name '*.egg-info' -exec rm -rf {} +
 
 type-check: ## check code for typing errors
 	@poetry run mypy rocket_args

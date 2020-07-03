@@ -44,13 +44,11 @@ class RocketBase:
         fields_with_help = [help_field] + list(fields)
 
         defaults = {field.name: field.value.default for field in fields_with_help if field.value.default is not ...}
-        env_args = cast_args_to_fields_types(get_env_args(fields_with_help), fields)
-        cli_args = cast_args_to_fields_types(get_cmd_line_args(fields_with_help), fields)
-
-        parsed_args = [defaults, env_args, cli_args]
+        parsed_args = [defaults, get_env_args(fields_with_help), get_cmd_line_args(fields_with_help)]
         joined_args = {key: value for args in parsed_args for key, value in args.items()}
+        casted_args = cast_args_to_fields_types(joined_args, fields)
 
-        if "help" in joined_args:
+        if "help" in casted_args:
             help_message = MessageBuilder(fields_with_help).create_help_message()
             raise SystemExit(help_message)
-        return joined_args
+        return casted_args

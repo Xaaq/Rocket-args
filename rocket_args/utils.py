@@ -67,17 +67,14 @@ class MessageBuilder:
         return f"Missing arguments:\n{arguments_help}"
 
     def __create_arguments_help(self) -> str:
-        padding = " " * 2
-        help_message = f"{padding}{Color.cli.value}CLI NAMES\t{Color.env.value}ENV NAME{Color.neutral.value}\tHELP\n"
+        help_message = f"{Color.cli.value}CLI NAMES\t{Color.env.value}ENV NAME{Color.neutral.value}\tHELP\n"
 
         for field in self.__fields_data:
             cli_names = " ".join(field.cli_names) if field.cli_names else ""
             env_name = field.env_name if field.env_name else ""
             arg_help = field.value.help if field.value.help else ""
             help_message += (
-                f"{padding}{Color.cli.value}{cli_names}\t"
-                f"{Color.env.value}{env_name}\t"
-                f"{Color.neutral.value}{arg_help}\n"
+                f"{Color.cli.value}{cli_names}\t" f"{Color.env.value}{env_name}\t" f"{Color.neutral.value}{arg_help}\n"
             )
 
         return help_message
